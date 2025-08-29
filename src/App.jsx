@@ -1,21 +1,30 @@
-import { useEffect } from "react";
 import "./App.css";
-import { getSpell, getAllSpells, getMonster } from "./services/dndApi";
+import InitiativeForm from "./components/InitiativeForm";
+import InitiativeList from "./components/InitiativeList";
+import { useState } from "react";
 
 function App() {
-  console.log("Hell2o");
+  const [initiativeItems, setInitiativeItems] = useState([]);
 
-  const getSpells = async () => {
-    const spells = await getAllSpells();
-    console.log(spells);
-    const fireball = await getMonster("tarrasque");
-    console.log(fireball);
+  const handleAdd = (newCharacter) => {
+    setInitiativeItems((prev) =>
+      [...prev, newCharacter].sort((a, b) => b.initiative - a.initiative)
+    );
   };
 
-  useEffect(() => {
-    getSpells();
-  }, []);
-  return <></>;
+  const handleDelete = (id) => {
+    setInitiativeItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  return (
+    <>
+      <InitiativeList
+        initiativeItems={initiativeItems}
+        onDelete={handleDelete}
+      />
+      <InitiativeForm onAdd={handleAdd}></InitiativeForm>
+    </>
+  );
 }
 
 export default App;
