@@ -32,6 +32,7 @@ function InitiativeForm({ onAdd }) {
           type="text"
           placeholder="Name"
           value={name}
+          required
           onChange={(e) => setName(e.target.value)}
         />
         <input
