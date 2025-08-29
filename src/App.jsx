@@ -2,6 +2,7 @@ import "./App.css";
 import InitiativeForm from "./components/InitiativeForm";
 import InitiativeList from "./components/InitiativeList";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   const [initiativeItems, setInitiativeItems] = useState([]);
