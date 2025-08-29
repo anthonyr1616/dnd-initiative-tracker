@@ -1,4 +1,4 @@
-class Spell {
+class SpellDetails {
   constructor({
     index,
     name,
@@ -14,12 +14,12 @@ class Spell {
     school,
     classes = [],
     subclasses = [],
-    url
+    url,
   }) {
     this.id = index;
     this.name = name;
-    this.description = desc.join(" "); // merge array into single string
-    this.higherLevel = higher_level.join(" ");
+    this.description = desc;
+    this.higherLevel = higher_level;
     this.range = range;
     this.components = components;
     this.ritual = ritual;
@@ -27,10 +27,18 @@ class Spell {
     this.concentration = concentration;
     this.castingTime = casting_time;
     this.level = level;
-    this.school = school?.name || null; // just store the name
-    this.classes = classes.map(c => c.name); // array of class names
-    this.subclasses = subclasses.map(sc => sc.name); // array of subclass names
+    this.school = school?.name || null;
+    this.classes = classes.map((c) => c.name);
+    this.subclasses = subclasses.map((sc) => sc.name);
     this.apiUrl = url;
   }
+
+  isCantrip() {
+    return this.level === 0;
+  }
+
+  toString() {
+    return `${this.name} (Level ${this.level})`;
+  }
 }
-export { Spell }
+export { SpellDetails };

@@ -1,3 +1,8 @@
+import { MonsterDetails } from "../models/MonsterDetails";
+import { MonsterSummary } from "../models/MonsterSummary";
+import { SpellDetails } from "../models/SpellDetails";
+import { SpellSummary } from "../models/SpellSummary";
+
 const baseUrl = "https://www.dnd5eapi.co/";
 // TODO: Use GraphQL and optionally Apollo 
 
@@ -8,7 +13,8 @@ async function getAllSpells() {
     if (!response.ok) {
       throw new Error(`Failed with status ${response.status}`);
     }
-    return await response.json();
+    const spellsData = await response.json();
+    return spellsData.results.map(s => new SpellSummary(s));
   } catch (err) {
     console.error("Failed to get spells: ", err);
     return null;
@@ -22,7 +28,8 @@ async function getSpell(spell) {
     if (!response.ok) {
       throw new Error(`Failed with status ${response.status}`);
     }
-    return await response.json();
+    const spellData = await response.json();
+    return new SpellDetails(spellData);
   } catch (err) {
     console.error("Failed to get spell: ", err);
     return null;
@@ -36,7 +43,8 @@ async function getAllMonsters() {
     if (!response.ok) {
       throw new Error(`Failed with status ${response.status}`);
     }
-    return await response.json();
+    const monstersData = await response.json();
+    return monstersData.results.map(s => new MonsterSummary(s));
   } catch (err) {
     console.error("Failed to get monsters: ", err);
     return null;
@@ -50,7 +58,8 @@ async function getMonster(monster) {
     if (!response.ok) {
       throw new Error(`Failed with status ${response.status}`);
     }
-    return await response.json();
+    const monsterData = await response.json();
+    return new MonsterDetails(monsterData);
   } catch (err) {
     console.error("Failed to get monster: ", err);
     return null;
