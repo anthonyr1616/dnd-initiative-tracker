@@ -2,7 +2,6 @@ import "./App.css";
 import InitiativeForm from "./components/InitiativeForm";
 import InitiativeList from "./components/InitiativeList";
 import { useState } from "react";
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 
 function App() {
   const [initiativeItems, setInitiativeItems] = useState([]);
@@ -24,6 +23,11 @@ function App() {
   }
 
   const handleDelete = (id) => {
+    if (isEditing && editingItem && editingItem.id === id) {
+      setIsEditing(false);
+      setEditingItem(null);
+    }
+
     setInitiativeItems((prev) => prev.filter((item) => item.id !== id));
   };
 
