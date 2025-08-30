@@ -8,8 +8,11 @@ function InitiativeList({ initiativeItems, onDelete }) {
           key={item.id}
           id={item.id}
           name={item.name}
-          hp={item.hp}
+          maxHp={item.maxHp}
+          currentHp={item.currentHp}
+          temporaryHp={item.temporaryHp}
           ac={item.ac}
+          bonusAc={item.bonusAc}
           initiative={item.initiative}
           onDelete={onDelete}
         />

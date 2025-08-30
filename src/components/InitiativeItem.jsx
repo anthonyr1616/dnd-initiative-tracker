@@ -9,8 +9,23 @@ import {
 } from "lucide-react";
 
 // TODO: Add edit functionality and damage/heal functionality and edit bonus health/AC
+// Edit button should allow you to any of the stats shown
+// Heal - Add hp to current HP, but not above max HP
+// Damage - Subtract hp from current HP (starting with temp HP)
+// Add temp HP - Add to bonus health
 
-function InitiativeItem({ id, name, hp, ac, initiative, onDelete, onEdit }) {
+function InitiativeItem({
+  id,
+  name,
+  maxHp,
+  currentHp,
+  temporaryHp,
+  ac,
+  bonusAc,
+  initiative,
+  onDelete,
+  onEdit,
+}) {
   return (
     <div
       className="bg-slate-400 rounded-xl flex justify-between items-center p-3 gap-6 shadow-md shadow-slate-800 hover:shadow-lg transition-shadow"
@@ -19,10 +34,13 @@ function InitiativeItem({ id, name, hp, ac, initiative, onDelete, onEdit }) {
       <p className="text-4xl font-bold flex-1">{name}</p>
       <div className="flex items-center gap-6 text-xl font-semibold">
         <div className="flex flex-col items-start gap-2">
-          <p className="flex items-center gap-2" title="HP">
+          <p className="flex items-center gap-2" title="Total HP">
             <Heart className="w-8 h-8 fill-red-600 text-3xl" strokeWidth={1} />
             <span className="text-3xl">
-              {hp}/{hp}
+              <span className={temporaryHp > 0 ? "text-green-300" : ""}>
+                {currentHp + temporaryHp}
+              </span>
+              /{maxHp}
             </span>
           </p>
           <p className="flex items-center gap-2" title="Temporary HP">
@@ -30,17 +48,19 @@ function InitiativeItem({ id, name, hp, ac, initiative, onDelete, onEdit }) {
               className="w-8 h-8 fill-green-300 text-3xl"
               strokeWidth={1}
             />
-            <span className="text-3xl">{hp}</span>
+            <span className="text-3xl">{temporaryHp}</span>
           </p>
         </div>
         <div className="flex flex-col items-start gap-2">
-          <p className="flex items-center gap-2" title="AC">
+          <p className="flex items-center gap-2" title="Total AC">
             <Shield className="w-8 h-8 fill-gray-300" strokeWidth={1} />
-            <span className="text-3xl">{ac}</span>
+            <span className={`text-3xl ${bonusAc > 0 ? "text-green-300" : ""}`}>
+              {ac + bonusAc}
+            </span>
           </p>
           <p className="flex items-center gap-2" title="Bonus AC">
             <ShieldPlus className="w-8 h-8 fill-green-300" strokeWidth={1} />
-            <span className="text-3xl">{ac}</span>
+            <span className="text-3xl">{bonusAc}</span>
           </p>
         </div>
         <p className="flex items-center gap-2" title="Initiative">
