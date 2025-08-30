@@ -18,13 +18,13 @@ function App() {
   };
 
   return (
-    <>
+    <div className="flex flex-col max-w-7xl mx-auto p-4">
       <InitiativeList
         initiativeItems={initiativeItems}
         onDelete={handleDelete}
       />
       <InitiativeForm onAdd={handleAdd}></InitiativeForm>
-    </>
+    </div>
   );
 }
 

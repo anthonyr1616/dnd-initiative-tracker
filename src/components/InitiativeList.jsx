@@ -2,7 +2,7 @@ import InitiativeItem from "./InitiativeItem";
 
 function InitiativeList({ initiativeItems, onDelete }) {
   return (
-    <div className="initiative-list">
+    <div className="flex flex-col gap-3 p-3">
       {initiativeItems.map((item) => (
         <InitiativeItem
           key={item.id}
