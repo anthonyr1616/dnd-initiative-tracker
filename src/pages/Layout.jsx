@@ -10,7 +10,7 @@ function Layout() {
           <Link to="/spells">Spells</Link>
         </nav>
       </header>
-      <main>
+      <main className="h-full">
         <Outlet />
       </main>
     </div>

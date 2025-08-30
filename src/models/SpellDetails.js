@@ -6,6 +6,7 @@ class SpellDetails {
     higher_level = [],
     range,
     components = [],
+    material,
     ritual = false,
     duration,
     concentration = false,
@@ -22,6 +23,7 @@ class SpellDetails {
     this.higherLevel = higher_level;
     this.range = range;
     this.components = components;
+    this.material = material;
     this.ritual = ritual;
     this.duration = duration;
     this.concentration = concentration;
