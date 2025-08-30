@@ -4,6 +4,7 @@ import { SpellDetails } from "../models/SpellDetails";
 import { SpellSummary } from "../models/SpellSummary";
 
 const baseUrl = "https://www.dnd5eapi.co/";
+// Documentation: https://www.dnd5eapi.co/docs/
 // TODO: Use GraphQL and optionally Apollo 
 
 async function getAllSpells() {
