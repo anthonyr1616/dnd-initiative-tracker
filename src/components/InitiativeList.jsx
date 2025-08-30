@@ -1,6 +1,6 @@
 import InitiativeItem from "./InitiativeItem";
 
-function InitiativeList({ initiativeItems, onDelete }) {
+function InitiativeList({ initiativeItems, onDelete, onEdit }) {
   return (
     <div className="flex flex-col gap-3 p-3">
       {initiativeItems.map((item) => (
@@ -15,6 +15,7 @@ function InitiativeList({ initiativeItems, onDelete }) {
           bonusAc={item.bonusAc}
           initiative={item.initiative}
           onDelete={onDelete}
+          onEdit={onEdit}
         />
       ))}
     </div>

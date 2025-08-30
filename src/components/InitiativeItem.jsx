@@ -8,8 +8,7 @@ import {
   ShieldPlus,
 } from "lucide-react";
 
-// TODO: Add edit functionality and damage/heal functionality and edit bonus health/AC
-// Edit button should allow you to any of the stats shown
+// TODO:
 // Heal - Add hp to current HP, but not above max HP
 // Damage - Subtract hp from current HP (starting with temp HP)
 // Add temp HP - Add to bonus health

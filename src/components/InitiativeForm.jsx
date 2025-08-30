@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// TODO: Add current HP, bonus health, and bonus AC to form
-
-function InitiativeForm({ onAdd }) {
+function InitiativeForm({
+  onAdd,
+  isEditing,
+  setIsEditing,
+  editingItem,
+  setEditingItem,
+  onSave,
+}) {
   const [name, setName] = useState("");
   const [maxHp, setMaxHp] = useState("");
   const [currentHp, setCurrentHp] = useState("");
@@ -11,11 +16,33 @@ function InitiativeForm({ onAdd }) {
   const [bonusAc, setBonusAc] = useState("");
   const [initiative, setInitiative] = useState("");
 
+  useEffect(() => {
+    if (isEditing && editingItem) {
+      setName(editingItem.name || "");
+      setMaxHp(editingItem.maxHp || "");
+      setCurrentHp(editingItem.currentHp || "");
+      setTemporaryHp(editingItem.temporaryHp || "");
+      setAc(editingItem.ac || "");
+      setBonusAc(editingItem.bonusAc || "");
+      setInitiative(editingItem.initiative || "");
+    }
+  }, [isEditing, editingItem]);
+
+  const resetForm = () => {
+    setName("");
+    setMaxHp("");
+    setCurrentHp("");
+    setTemporaryHp("");
+    setAc("");
+    setBonusAc("");
+    setInitiative("");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newCharacter = {
-      id: crypto.randomUUID(),
+    const character = {
+      id: isEditing ? editingItem.id : crypto.randomUUID(),
       name,
       maxHp: Number(maxHp),
       currentHp: Number(currentHp),
@@ -25,15 +52,21 @@ function InitiativeForm({ onAdd }) {
       initiative: Number(initiative),
     };
 
-    onAdd(newCharacter);
+    if (isEditing) {
+      onSave(character);
+      setIsEditing(false);
+      setEditingItem(null);
+    } else {
+      onAdd(character);
+    }
 
-    setName("");
-    setMaxHp("");
-    setCurrentHp("");
-    setTemporaryHp("");
-    setAc("");
-    setBonusAc("");
-    setInitiative("");
+    resetForm();
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    setIsEditing(false);
+    setEditingItem(null);
   };
 
   return (
@@ -59,7 +92,7 @@ function InitiativeForm({ onAdd }) {
             value={maxHp}
             onChange={(e) => {
               setMaxHp(e.target.value);
-              setCurrentHp(e.target.value);
+              if (!isEditing) setCurrentHp(e.target.value);
             }}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -68,9 +101,7 @@ function InitiativeForm({ onAdd }) {
             max="999"
             placeholder="Current HP"
             value={currentHp}
-            onChange={(e) => {
-              setCurrentHp(Math.min(e.target.value, maxHp));
-            }}
+            onChange={(e) => setCurrentHp(Math.min(e.target.value, maxHp))}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
@@ -109,12 +140,33 @@ function InitiativeForm({ onAdd }) {
           onChange={(e) => setInitiative(e.target.value)}
           className="w-28 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button
-          type="submit"
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Add
-        </button>
+
+        <div className="flex flex-col gap-1">
+          {isEditing ? (
+            <>
+              <button
+                type="submit"
+                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="rounded-md bg-gray-400 px-4 py-2 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              type="submit"
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Add
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );
