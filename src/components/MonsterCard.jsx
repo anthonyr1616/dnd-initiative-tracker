@@ -1,76 +1,83 @@
 import { decimalToFraction, makeUrl } from "../helpers/helperMethods";
+// TODO: Still need to fix skills/saving throws display and hit die to hit points. Also need to awdd usage per day for actions
 
-// TODO: Make closer to official stat block, missing usage per day for special abilties, hitdice next to hit points, Saving throws, skills, image, and hiding things not present
+const StatLine = ({ label, children }) =>
+  children && (
+    <p className="text-[#4a2800]">
+      <span className="font-bold">{label}</span> {children}
+    </p>
+  );
+
+const ActionList = ({ title, items }) => (
+  <>
+    {title && (
+      <>
+        <p className="font-bold text-lg  text-[#8d2e1e]">{title}</p>
+        <hr className="border-1  border-[#8d2e1e] mb-2" />
+      </>
+    )}
+
+    <ul className="flex flex-col">
+      {items.map((item) => (
+        <li key={item.name} className="mb-2">
+          <span className="font-bold">{item.name}.</span> {item.desc}
+        </li>
+      ))}
+    </ul>
+  </>
+);
+
+const formatKeyValueArray = (obj, capitalize = true) =>
+  Object.entries(obj).map(([key, value]) => {
+    const formattedKey = capitalize
+      ? key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+      : key;
+    return `${formattedKey} ${value}`;
+  });
+
+const calculateModifier = (score) => Math.floor((score - 10) / 2);
+
 export default function MonsterCard({ monster }) {
-  const armorCLassStrings = monster.armorClass.map((ac) => {
-    if (ac.type === "natural") {
-      return `${ac.value} (natural armor)`;
-    }
-
-    if (ac.type === "condition" && ac.condition) {
+  const armorClassStrings = monster.armorClass.map((ac) => {
+    if (ac.type === "natural") return `${ac.value} (natural armor)`;
+    if (ac.type === "condition" && ac.condition)
       return `${ac.value} while ${ac.condition.name.toLowerCase()}`;
-    }
-
-    if (ac.type === "armor" && ac.armor?.length > 0) {
-      const armorNames = ac.armor.map((a) => a.name).join(", ");
-      return `${ac.value} with ${armorNames}`;
-    }
-
+    if (ac.type === "armor" && ac.armor?.length)
+      return `${ac.value} with ${ac.armor.map((a) => a.name).join(", ")}`;
     return `${ac.value}`;
   });
 
-  // Make special abilites array
-
-  const statArray = Object.entries(monster.stats).map(([key, value]) => ({
-    name: key,
-    value: value,
+  const statArray = Object.entries(monster.stats).map(([name, value]) => ({
+    name,
+    value,
+    mod: calculateModifier(value),
   }));
 
-  const sensesArray = Object.entries(monster.senses).map(([key, value]) => {
-    const formattedKey = key
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-    return `${formattedKey} ${value}`;
-  });
-
-  const speedArray = Object.entries(monster.speed).map(([key, value]) => {
-    if (key === "hover" && value === true) {
-      return "(hover)";
-    }
-
-    const formattedKey = key
-      .replace(/_/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-    return `${formattedKey} ${value}`;
-  });
-
-  const calculateModifier = (score) => {
-    return Math.floor((score - 10) / 2);
-  };
+  const sensesArray = formatKeyValueArray(monster.senses);
+  const speedArray = Object.entries(monster.speed).map(([key, value]) =>
+    key === "hover" && value
+      ? "(hover)"
+      : `${key
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, (c) => c.toUpperCase())} ${value}`
+  );
 
   return (
-    <div className="rounded-lg border p-4 shadow-sm bg-gray-50">
-      <h2 className="text-2xl font-bold uppercase">{monster.name}</h2>
-      <p>
-        <span className="italic text-xs">
-          {monster.size} {monster.type}
-          {monster.subtype ? ` (${monster.subtype})` : ""}, {monster.alignment}
-        </span>
+    <div className="rounded-lg border p-4 shadow-sm bg-[#faefd1]">
+      <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
+        {monster.name}
+      </h2>
+      <p className="italic text-xs">
+        {monster.size} {monster.type}
+        {monster.subtype ? ` (${monster.subtype})` : ""}, {monster.alignment}
       </p>
-      <img src={makeUrl(monster.image)} alt="" />
-      <p>
-        <span className="font-bold">Hit Points</span>{" "}
-        <span>{monster.hitPoints}</span>
-      </p>
-      <p>
-        <span className="font-bold">Armor Class</span>{" "}
-        {armorCLassStrings.join(", ")}
-      </p>
-      <p>
-        <span className="font-bold">Speed</span> {speedArray.join(", ")}
-      </p>
-      <hr />
-      <ul className="flex justify-between">
+      <hr className="border-2  border-[#8d2e1e] my-2" />
+      {monster.image && <img src={makeUrl(monster.image)} alt={monster.name} />}
+      <StatLine label="Hit Points">{monster.hitPoints}</StatLine>
+      <StatLine label="Armor Class">{armorClassStrings.join(", ")}</StatLine>
+      <StatLine label="Speed">{speedArray.join(", ")}</StatLine>
+      <hr className="border-2  border-[#8d2e1e] my-2" />
+      <ul className="flex justify-between text-[#4a2800]">
         {statArray.map((stat) => (
           <li
             key={stat.name}
@@ -79,83 +86,47 @@ export default function MonsterCard({ monster }) {
             <span className="font-bold">
               {stat.name.slice(0, 3).toUpperCase()}
             </span>
-            {stat.value} (
-            {calculateModifier(stat.value) >= 0
-              ? `+${calculateModifier(stat.value)}`
-              : `-${calculateModifier(stat.value)}`}
-            )
+            {stat.value} ({stat.mod >= 0 ? `+${stat.mod}` : stat.mod})
           </li>
         ))}
       </ul>
-      <hr />
-      <p>
-        <span className="font-bold">Saving Throws</span>
-      </p>{" "}
-      <p>
-        <span className="font-bold">Damage Vulnerabilities</span>{" "}
+      <hr className="border-2  border-[#8d2e1e] my-2" />
+      <StatLine label="Saving Throws">
+        {monster.savingThrows?.join(", ") || "—"}
+      </StatLine>
+      <StatLine label="Damage Vulnerabilities">
         {monster.damageVulnerabilities.join(", ")}
-      </p>{" "}
-      <p>
-        <span className="font-bold">Damage Resistances</span>{" "}
+      </StatLine>
+      <StatLine label="Damage Resistances">
         {monster.damageResistances.join(", ")}
-      </p>
-      <p>
-        <span className="font-bold">Damage Immunities</span>{" "}
+      </StatLine>
+      <StatLine label="Damage Immunities">
         {monster.damageImmunities.join(", ")}
-      </p>
-      <p>
-        <span className="font-bold">Condition Immunities</span>{" "}
+      </StatLine>
+      <StatLine label="Condition Immunities">
         {monster.conditionImmunities.join(", ")}
-      </p>
-      <p>
-        <span className="font-bold">Senses</span> {sensesArray.join(", ")}
-      </p>
-      <p>
-        <span className="font-bold">Languages</span> {monster.languages ? monster.languages : "—"}
-      </p>
-      <p>
-        <span className="font-bold">Challenge</span>{" "}
-        {decimalToFraction(Number(monster.challengeRating))}{" "}
-        {`(${monster.xp} XP)`}
-      </p>
-      <hr />
-      <ul className="flex flex-col">
-        {monster.specialAbilities.map((ability) => (
-          <li>
-            <span className="font-bold">{`${ability.name}`}.</span>{" "}
-            <span>{ability.desc}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="font-bold text-lg">ACTIONS</p>
-      <hr />
-      <ul className="flex flex-col">
-        {monster.actions.map((action) => (
-          <li key={action.name} className="mb-2">
-            <span className="font-bold">{action.name}.</span>{" "}
-            <span>{action.desc}</span>
-          </li>
-        ))}
-      </ul>
-      <p className="font-bold text-lg">REACTIONS</p>
-      <hr />
-      <ul className="flex flex-col">
-        {monster.reactions.map((reaction) => (
-          <li key={reaction.name} className="mb-2">
-            <span className="font-bold">{reaction.name}.</span>{" "}
-            <span>{reaction.desc}</span>
-          </li>
-        ))}{" "}
-        <p className="font-bold text-lg">LEGENDARY ACTIONS</p>
-        <hr />
-      </ul>
-      <ul className="flex flex-col">
-        {monster.legendaryActions.map((la) => (
-          <li key={la.name} className="mb-2">
-            <span className="font-bold">{la.name}.</span> <span>{la.desc}</span>
-          </li>
-        ))}
-      </ul>
+      </StatLine>
+      <StatLine label="Senses">{sensesArray.join(", ")}</StatLine>
+      <StatLine label="Languages">{monster.languages || "—"}</StatLine>
+      <StatLine label="Challenge">
+        {decimalToFraction(Number(monster.challengeRating))} ({monster.xp} XP)
+      </StatLine>
+      <hr className="border-2  border-[#8d2e1e] my-2" />
+      {monster.specialAbilities.length > 0 && (
+        <ActionList items={monster.specialAbilities} />
+      )}
+      {monster.actions.length > 0 && (
+        <ActionList title="ACTIONS" items={monster.actions} />
+      )}
+      {monster.reactions.length > 0 && (
+        <ActionList title="REACTIONS" items={monster.reactions} />
+      )}
+      {monster.legendaryActions.length > 0 && (
+        <ActionList
+          title="LEGENDARY ACTIONS"
+          items={monster.legendaryActions}
+        />
+      )}
     </div>
   );
 }

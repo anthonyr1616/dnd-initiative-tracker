@@ -72,7 +72,7 @@ function InitiativeForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto p-4 bg-white rounded-xl shadow-slate-800 shadow-md"
+      className="w-full max-w-2xl mx-auto p-4 bg-white rounded-xl shadow-[#b6ad90] shadow-lg"
     >
       <div className="flex flex-wrap gap-2 items-center">
         <input

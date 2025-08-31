@@ -27,10 +27,10 @@ function InitiativeItem({
 }) {
   return (
     <div
-      className="bg-slate-400 rounded-xl flex justify-between items-center p-3 gap-6 shadow-md shadow-slate-800 hover:shadow-lg transition-shadow"
+      className="bg-[#edf1f2] rounded-xl flex justify-between items-center p-3 gap-6 shadow-md shadow-[#b6ad90] hover:shadow-lg transition-shadow"
       key={id}
     >
-      <p className="text-4xl font-bold flex-1">{name}</p>
+      <p className="text-4xl font-bold flex-1 text-[#3a1c04]">{name}</p>
       <div className="flex items-center gap-6 text-xl font-semibold">
         <div className="flex flex-col items-start gap-2">
           <p className="flex items-center gap-2" title="Total HP">
