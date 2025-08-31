@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllMonsters, getMonster } from "../services/dndApi";
 import CustomComboBox from "../components/CustomComboBox";
+import MonsterCard from "../components/MonsterCard";
 
 const MonsterInfoPage = () => {
   const [monsters, setMonsters] = useState([]);
@@ -37,7 +38,6 @@ const MonsterInfoPage = () => {
   return (
     <div id="monster-info-page" className="p-6 max-w-lg mx-auto space-y-6">
       <h1 className="text-2xl font-bold mb-4">Monster Info Page</h1>
-
       <CustomComboBox
         items={monsters}
         value={selectedMonster}
@@ -45,30 +45,7 @@ const MonsterInfoPage = () => {
         ariaLabel="Monster"
         placeholder="Search monsters..."
       ></CustomComboBox>
-
-      {monsterDetails && (
-        <div className="rounded-lg border p-4 shadow-sm bg-gray-50">
-          <h2 className="text-xl font-semibold mb-2">{monsterDetails.name}</h2>
-          <p>
-            <span className="font-medium">Size:</span> {monsterDetails.size}
-          </p>
-          <p>
-            <span className="font-medium">Type:</span> {monsterDetails.type}
-          </p>
-          <p>
-            <span className="font-medium">Alignment:</span>{" "}
-            {monsterDetails.alignment}
-          </p>
-          <p>
-            <span className="font-medium">Armor Class:</span>{" "}
-            {monsterDetails.armorClass?.[0]?.value}
-          </p>
-          <p>
-            <span className="font-medium">Hit Points:</span>{" "}
-            {monsterDetails.hitPoints}
-          </p>
-        </div>
-      )}
+      {monsterDetails && <MonsterCard monster={monsterDetails} />}
     </div>
   );
 };

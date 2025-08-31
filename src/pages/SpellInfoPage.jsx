@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllSpells, getSpell } from "../services/dndApi";
 import CustomComboBox from "../components/CustomComboBox";
-import ReactMarkdown from "react-markdown";
+import SpellCard from "../components/SpellCard";
 
 const SpellInfoPage = () => {
   const [spells, setSpells] = useState([]);
@@ -45,43 +45,8 @@ const SpellInfoPage = () => {
         ariaLabel="Spell"
         placeholder="Search spells..."
       ></CustomComboBox>
-      {spellDetails && (
-        <div className="rounded-lg border p-4 shadow-sm bg-gray-50">
-          <h2 className="text-xl font-semibold mb-2">{spellDetails.name}</h2>
-          <p>
-            <span className="font-medium">
-              {`${
-                spellDetails.level > 0 ? `Level ${spellDetails.level}` : ""
-              } ${spellDetails.school} ${
-                spellDetails.level === 0 ? "Cantrip" : ""
-              }`}{" "}
-              ({spellDetails.classes.join(", ")})
-            </span>
-          </p>
-          <p>
-            <span className="font-medium">
-              Casting Time: {spellDetails.castingTime}
-            </span>
-          </p>
-          <p>
-            <span className="font-medium">Range: {spellDetails.range}</span>
-          </p>
-          <p>
-            <span className="font-medium">
-              Components: {spellDetails.components.join(", ")}
-              {spellDetails.material ? ` (${spellDetails.material})` : ""}
-            </span>
-          </p>
-          <p>
-            <span className="font-medium">
-              Duration: {spellDetails.duration}
-            </span>
-          </p>
-          {spellDetails.description.map((paragraph, index) => (
-            <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
-          ))}
-        </div>
-      )}
+      {spellDetails && <SpellCard spell={spellDetails} />}
+      
     </div>
   );
 };

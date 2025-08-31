@@ -1,14 +1,14 @@
-import { MonsterDetails } from "../models/MonsterDetails";
+import { MonsterDetails } from "../models/MonsterDetails.js";
 import { MonsterSummary } from "../models/MonsterSummary";
 import { SpellDetails } from "../models/SpellDetails";
 import { SpellSummary } from "../models/SpellSummary";
 
-const baseUrl = "https://www.dnd5eapi.co/";
+const BASE_URL = "https://www.dnd5eapi.co";
 // Documentation: https://www.dnd5eapi.co/docs/
 // TODO: Use GraphQL and optionally Apollo 
 
 async function getAllSpells() {
-  const url = new URL("/api/2014/spells/", baseUrl);
+  const url = new URL("/api/2014/spells/", BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -23,7 +23,7 @@ async function getAllSpells() {
 }
 
 async function getSpell(spell) {
-  const url = new URL(`/api/2014/spells/${spell}`, baseUrl);
+  const url = new URL(`/api/2014/spells/${spell}`, BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -38,7 +38,7 @@ async function getSpell(spell) {
 }
 
 async function getAllMonsters() {
-  const url = new URL(`/api/2014/monsters/`, baseUrl);
+  const url = new URL(`/api/2014/monsters/`, BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -53,7 +53,7 @@ async function getAllMonsters() {
 }
 
 async function getMonster(monster) {
-  const url = new URL(`/api/2014/monsters/${monster}`, baseUrl);
+  const url = new URL(`/api/2014/monsters/${monster}`, BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -68,7 +68,7 @@ async function getMonster(monster) {
 }
 
 async function getAllItems() {
-  const url = new URL(`/api/2014/equipment/`, baseUrl);
+  const url = new URL(`/api/2014/equipment/`, BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {
@@ -82,7 +82,7 @@ async function getAllItems() {
 }
 
 async function getItem(item) {
-  const url = new URL(`/api/2014/equipment/${item}`, baseUrl);
+  const url = new URL(`/api/2014/equipment/${item}`, BASE_URL);
   try {
     const response = await fetch(url);
     if (!response.ok) {

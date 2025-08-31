@@ -45,6 +45,19 @@ class MonsterDetails {
     this.armorClass = armor_class.map((ac) => ({
       type: ac.type,
       value: ac.value,
+      condition: ac.condition
+        ? {
+            id: ac.condition.index,
+            name: ac.condition.name,
+          }
+        : null,
+
+      armor: ac.armor
+        ? ac.armor.map((a) => ({
+            id: a.index,
+            name: a.name,
+          }))
+        : null,
     }));
     this.hitPoints = hit_points;
     this.hitDice = hit_dice;

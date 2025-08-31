@@ -6,7 +6,13 @@ import {
 } from "@headlessui/react";
 import { useState } from "react";
 
-function CustomComboBox({ items, value, onChange, ariaLabel = "", placeholder = "" }) {
+function CustomComboBox({
+  items,
+  value,
+  onChange,
+  ariaLabel = "",
+  placeholder = "",
+}) {
   const [query, setQuery] = useState("");
 
   const filteredItems =
@@ -25,6 +31,7 @@ function CustomComboBox({ items, value, onChange, ariaLabel = "", placeholder = 
           onChange={(event) => setQuery(event.target.value)}
           className="w-full border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder={placeholder}
+          autoComplete="off"
         />
         <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white shadow-lg empty:invisible">
           {filteredItems.map((item) => (
