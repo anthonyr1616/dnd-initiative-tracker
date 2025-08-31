@@ -36,8 +36,8 @@ const SpellInfoPage = () => {
   }, [selectedSpell]);
 
   return (
-    <div id="spell-info-page" className="p-6 max-w-lg mx-auto space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Spell Info Page</h1>
+    <div id="spell-info-page" className="p-6 max-w-2xl mx-auto space-y-6">
+      <h1 className="font-bold mb-4 text-center text-[white] text-4xl [text-shadow:_2px_2px_0_black,_-2px_2px_0_black,_2px_-2px_0_black,_-2px_-2px_0_black]">Spell Info</h1>
       <CustomComboBox
         items={spells}
         value={selectedSpell}
@@ -46,7 +46,6 @@ const SpellInfoPage = () => {
         placeholder="Search spells..."
       ></CustomComboBox>
       {spellDetails && <SpellCard spell={spellDetails} />}
-      
     </div>
   );
 };

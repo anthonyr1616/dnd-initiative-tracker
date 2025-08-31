@@ -1,41 +1,12 @@
-import { decimalToFraction, makeUrl } from "../helpers/helperMethods";
+import {
+  decimalToFraction,
+  makeUrl,
+  formatKeyValueArray,
+  calculateModifier,
+} from "../helpers/helperMethods";
+import StatLine from "./StatLine";
+import ActionList from "./ActionList";
 // TODO: Still need to fix skills/saving throws display and hit die to hit points. Also need to awdd usage per day for actions
-
-const StatLine = ({ label, children }) =>
-  children && (
-    <p className="text-[#4a2800]">
-      <span className="font-bold">{label}</span> {children}
-    </p>
-  );
-
-const ActionList = ({ title, items }) => (
-  <>
-    {title && (
-      <>
-        <p className="font-bold text-lg  text-[#8d2e1e]">{title}</p>
-        <hr className="border-1  border-[#8d2e1e] mb-2" />
-      </>
-    )}
-
-    <ul className="flex flex-col">
-      {items.map((item) => (
-        <li key={item.name} className="mb-2">
-          <span className="font-bold">{item.name}.</span> {item.desc}
-        </li>
-      ))}
-    </ul>
-  </>
-);
-
-const formatKeyValueArray = (obj, capitalize = true) =>
-  Object.entries(obj).map(([key, value]) => {
-    const formattedKey = capitalize
-      ? key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-      : key;
-    return `${formattedKey} ${value}`;
-  });
-
-const calculateModifier = (score) => Math.floor((score - 10) / 2);
 
 export default function MonsterCard({ monster }) {
   const armorClassStrings = monster.armorClass.map((ac) => {
@@ -62,6 +33,22 @@ export default function MonsterCard({ monster }) {
           .replace(/\b\w/g, (c) => c.toUpperCase())} ${value}`
   );
 
+  const skillsArray = monster.proficiencies
+    .filter((p) => p.name.startsWith("Skill: "))
+    .map(
+      (p) =>
+        `${p.name.replace("Skill: ", "")} ${p.value >= 0 ? `+${p.value}` : `-${p.value}`}`
+    );
+
+  const savingThrowsArray = monster.proficiencies
+    .filter((p) => p.name.startsWith("Saving Throw: "))
+    .map(
+      (p) =>
+        `${p.name.replace("Saving Throw: ", "")} ${
+          p.value >= 0 ? `+${p.value}` : `-${p.value}`
+        }`
+    );
+
   return (
     <div className="rounded-lg border p-4 shadow-sm bg-[#faefd1]">
       <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
@@ -72,11 +59,19 @@ export default function MonsterCard({ monster }) {
         {monster.subtype ? ` (${monster.subtype})` : ""}, {monster.alignment}
       </p>
       <hr className="border-2  border-[#8d2e1e] my-2" />
-      {monster.image && <img src={makeUrl(monster.image)} alt={monster.name} />}
-      <StatLine label="Hit Points">{monster.hitPoints}</StatLine>
+      {monster.image && (
+        <img
+          src={makeUrl(monster.image)}
+          alt={monster.name}
+          className="mx-auto my-2 border-1 border-[#8d2e1e] rounded-2xl"
+        />
+      )}
       <StatLine label="Armor Class">{armorClassStrings.join(", ")}</StatLine>
+      <StatLine label="Hit Points">
+        {monster.hitPoints} ({monster.hitPointsRoll})
+      </StatLine>
       <StatLine label="Speed">{speedArray.join(", ")}</StatLine>
-      <hr className="border-2  border-[#8d2e1e] my-2" />
+      <hr className="border-2 border-[#8d2e1e] my-2" />
       <ul className="flex justify-between text-[#4a2800]">
         {statArray.map((stat) => (
           <li
@@ -92,7 +87,10 @@ export default function MonsterCard({ monster }) {
       </ul>
       <hr className="border-2  border-[#8d2e1e] my-2" />
       <StatLine label="Saving Throws">
-        {monster.savingThrows?.join(", ") || "—"}
+        {savingThrowsArray?.join(", ")}
+      </StatLine>
+      <StatLine label="Skills">
+        {skillsArray?.join(", ")}
       </StatLine>
       <StatLine label="Damage Vulnerabilities">
         {monster.damageVulnerabilities.join(", ")}

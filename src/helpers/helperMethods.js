@@ -26,4 +26,14 @@ function makeUrl(url) {
   return new URL(url, BASE_URL).toString();
 }
 
-export { decimalToFraction, makeUrl };
+const formatKeyValueArray = (obj, capitalize = true) =>
+  Object.entries(obj).map(([key, value]) => {
+    const formattedKey = capitalize
+      ? key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+      : key;
+    return `${formattedKey} ${value}`;
+  });
+
+const calculateModifier = (score) => Math.floor((score - 10) / 2);
+
+export { decimalToFraction, makeUrl, formatKeyValueArray, calculateModifier };

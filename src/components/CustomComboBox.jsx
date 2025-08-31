@@ -29,7 +29,7 @@ function CustomComboBox({
           aria-label={ariaLabel}
           displayValue={(item) => item?.name ?? ""}
           onChange={(event) => setQuery(event.target.value)}
-          className="w-full border rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border rounded-lg px-3 py-2 shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder={placeholder}
           autoComplete="off"
         />
