@@ -3,8 +3,10 @@ import StatLine from "./StatLine";
 
 export default function SpellCard({ spell }) {
   return (
-    <div className="rounded-lg border p-4 shadow-sm bg-gray-50">
-      <h2 className="text-2xl font-bold uppercase text-[#4a2800]">{spell.name}</h2>
+    <div className="rounded-lg border p-4 shadow-sm bg-[#faefd1] border-[#4a2800]">
+      <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
+        {spell.name}
+      </h2>
       <p>
         <span className="italic text-md">
           {spell.level > 0 && `Level ${spell.level} `}
@@ -12,19 +14,14 @@ export default function SpellCard({ spell }) {
           {spell.level === 0 && " cantrip"}
         </span>
       </p>
+      <hr className="border-2  border-[#8d2e1e] my-2" />
       <StatLine label="Casting Time:">{spell.castingTime}</StatLine>
-      <p>
-        <span className="font-medium">Range: {spell.range}</span>
-      </p>
-      <p>
-        <span className="font-medium">
-          Components: {spell.components.join(", ")}
-          {spell.material ? ` (${spell.material})` : ""}
-        </span>
-      </p>
-      <p>
-        <span className="font-medium">Duration: {spell.duration}</span>
-      </p>
+      <StatLine label="Range:">{spell.range}</StatLine>
+      <StatLine label="Components:">
+        {spell.components.join(", ")}
+        {spell.material ? ` (${spell.material})` : ""}
+      </StatLine>
+      <StatLine label="Duration:">{spell.duration}</StatLine>
       {spell.description.map((paragraph, index) => (
         <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
       ))}

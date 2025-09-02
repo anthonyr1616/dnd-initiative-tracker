@@ -6,7 +6,7 @@ import {
 } from "../helpers/helperMethods";
 import StatLine from "./StatLine";
 import ActionList from "./ActionList";
-// TODO: Still need to fix skills/saving throws display and hit die to hit points. Also need to awdd usage per day for actions
+// TODO:   need to add usage per day for actions
 
 export default function MonsterCard({ monster }) {
   const armorClassStrings = monster.armorClass.map((ac) => {
@@ -50,7 +50,7 @@ export default function MonsterCard({ monster }) {
     );
 
   return (
-    <div className="rounded-lg border p-4 shadow-sm bg-[#faefd1]">
+    <div className="rounded-lg border border-[#4a2800] p-4 shadow-sm bg-[#faefd1]">
       <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
         {monster.name}
       </h2>
@@ -58,7 +58,7 @@ export default function MonsterCard({ monster }) {
         {monster.size} {monster.type}
         {monster.subtype ? ` (${monster.subtype})` : ""}, {monster.alignment}
       </p>
-      <hr className="border-2  border-[#8d2e1e] my-2" />
+      <hr className="border-2 border-[#8d2e1e] my-2" />
       {monster.image && (
         <img
           src={makeUrl(monster.image)}
@@ -86,12 +86,8 @@ export default function MonsterCard({ monster }) {
         ))}
       </ul>
       <hr className="border-2  border-[#8d2e1e] my-2" />
-      <StatLine label="Saving Throws">
-        {savingThrowsArray?.join(", ")}
-      </StatLine>
-      <StatLine label="Skills">
-        {skillsArray?.join(", ")}
-      </StatLine>
+      <StatLine label="Saving Throws">{savingThrowsArray?.join(", ")}</StatLine>
+      <StatLine label="Skills">{skillsArray?.join(", ")}</StatLine>
       <StatLine label="Damage Vulnerabilities">
         {monster.damageVulnerabilities.join(", ")}
       </StatLine>

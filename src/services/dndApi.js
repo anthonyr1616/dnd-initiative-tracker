@@ -5,7 +5,8 @@ import { SpellSummary } from "../models/SpellSummary";
 
 const BASE_URL = "https://www.dnd5eapi.co";
 // Documentation: https://www.dnd5eapi.co/docs/
-// TODO: Use GraphQL and optionally Apollo 
+// TODO: Might use GraphQL and optionally Apollo 
+// Also look into Open5E Api
 
 async function getAllSpells() {
   const url = new URL("/api/2014/spells/", BASE_URL);
