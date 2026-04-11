@@ -36,8 +36,8 @@ function InitiativeItem({
   onMoveUp,
   onMoveDown,
   isCurrentTurn,
-  isFirst,
-  isLast,
+  canMoveUp,
+  canMoveDown,
 }) {
   const [amount, setAmount] = useState("");
 
@@ -92,27 +92,30 @@ function InitiativeItem({
     >
       {/* Main row */}
       <div className="flex items-center gap-3">
-        {/* Reorder buttons */}
-        <div className="flex flex-col gap-0.5">
-          <button
-            onClick={() => onMoveUp(id)}
-            disabled={isFirst}
-            className="text-gray-400 hover:text-gray-700 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
-            title="Move up"
-          >
-            <ChevronUp className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => onMoveDown(id)}
-            disabled={isLast}
-            className="text-gray-400 hover:text-gray-700 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
-            title="Move down"
-          >
-            <ChevronDown className="w-5 h-5" />
-          </button>
+        <div className="flex flex-col gap-0.5 w-5">
+          {canMoveUp ? (
+            <button
+              onClick={() => onMoveUp(id)}
+              className="text-gray-400 hover:text-gray-700 cursor-pointer"
+              title="Move up"
+            >
+              <ChevronUp className="w-5 h-5" />
+            </button>
+          ) : (
+            <span className="w-5 h-5" />
+          )}
+          {canMoveDown ? (
+            <button
+              onClick={() => onMoveDown(id)}
+              className="text-gray-400 hover:text-gray-700 cursor-pointer"
+              title="Move down"
+            >
+              <ChevronDown className="w-5 h-5" />
+            </button>
+          ) : (
+            <span className="w-5 h-5" />
+          )}
         </div>
-
-        {/* Name */}
         <p
           className={`text-2xl font-bold flex-1 truncate ${
             isCurrentTurn ? "text-yellow-800" : "text-[#3a1c04]"
@@ -120,8 +123,6 @@ function InitiativeItem({
         >
           {name}
         </p>
-
-        {/* Stats */}
         <div className="flex items-center gap-4 shrink-0">
           <div className="flex items-center gap-1" title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}>
             <Heart className="w-5 h-5 fill-red-500 text-red-500" strokeWidth={1} />
@@ -147,8 +148,6 @@ function InitiativeItem({
             <span className="text-xl font-semibold">{initiative}</span>
           </div>
         </div>
-
-        {/* Edit / Delete */}
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => onEdit(id)}
@@ -166,16 +165,12 @@ function InitiativeItem({
           </button>
         </div>
       </div>
-
-      {/* Health bar */}
       <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-300 ${hpBarColor(currentHp, maxHp)}`}
           style={{ width: `${hpPct * 100}%` }}
         />
       </div>
-
-      {/* Quick actions */}
       <div className="mt-2 flex items-center gap-2 flex-wrap">
         <input
           type="number"

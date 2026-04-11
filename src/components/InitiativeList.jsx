@@ -16,8 +16,8 @@ function InitiativeList({
           key={item.id}
           {...item}
           isCurrentTurn={item.id === currentTurnId || (currentTurnId === null && index === 0)}
-          isFirst={index === 0}
-          isLast={index === initiativeItems.length - 1}
+          canMoveUp={index > 0 && initiativeItems[index - 1].initiative === item.initiative}
+          canMoveDown={index < initiativeItems.length - 1 && initiativeItems[index + 1].initiative === item.initiative}
           onDelete={onDelete}
           onEdit={onEdit}
           onUpdate={onUpdate}
