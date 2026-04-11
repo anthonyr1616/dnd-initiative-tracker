@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getAllMonsters, getMonster } from "../services/dndApi";
 import CustomComboBox from "../components/CustomComboBox";
 import MonsterCard from "../components/MonsterCard";
@@ -7,13 +7,13 @@ const MonsterInfoPage = () => {
   const [monsters, setMonsters] = useState([]);
   const [selectedMonster, setSelectedMonster] = useState(null);
   const [monsterDetails, setMonsterDetails] = useState(null);
+  const cache = useRef({});
 
   useEffect(() => {
     async function fetchMonsters() {
       try {
         const data = await getAllMonsters();
         setMonsters(data);
-        console.log("Got All Monsters");
       } catch (err) {
         console.error("Failed to fetch monsters:", err);
       }
@@ -23,11 +23,15 @@ const MonsterInfoPage = () => {
 
   useEffect(() => {
     if (!selectedMonster) return;
+    if (cache.current[selectedMonster.id]) {
+      setMonsterDetails(cache.current[selectedMonster.id]);
+      return;
+    }
     async function fetchMonsterDetails() {
       try {
         const details = await getMonster(selectedMonster.id);
+        cache.current[selectedMonster.id] = details;
         setMonsterDetails(details);
-        console.log("Got monster details:", details);
       } catch (err) {
         console.error("Failed to fetch monster details:", err);
       }
@@ -46,7 +50,7 @@ const MonsterInfoPage = () => {
         onChange={setSelectedMonster}
         ariaLabel="Monster"
         placeholder="Search monsters..."
-      ></CustomComboBox>
+      />
       {monsterDetails && <MonsterCard monster={monsterDetails} />}
     </div>
   );

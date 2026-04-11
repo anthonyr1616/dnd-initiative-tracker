@@ -4,7 +4,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useDeferredValue, useMemo } from "react";
 
 function CustomComboBox({
   items,
@@ -14,13 +14,17 @@ function CustomComboBox({
   placeholder = "",
 }) {
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
 
-  const filteredItems =
-    query === ""
-      ? items
-      : items.filter((item) =>
-          item.name.toLowerCase().includes(query.toLowerCase())
-        );
+  const MAX_RESULTS = 50;
+
+  const { visibleItems, totalMatches } = useMemo(() => {
+    if (deferredQuery === "") return { visibleItems: [], totalMatches: 0 };
+    const matches = items.filter((item) =>
+      item.name.toLowerCase().includes(deferredQuery.toLowerCase())
+    );
+    return { visibleItems: matches.slice(0, MAX_RESULTS), totalMatches: matches.length };
+  }, [items, deferredQuery]);
 
   return (
     <Combobox value={value} onChange={onChange} onClose={() => setQuery("")}>
@@ -34,7 +38,7 @@ function CustomComboBox({
           autoComplete="off"
         />
         <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white shadow-lg empty:invisible">
-          {filteredItems.map((item) => (
+          {visibleItems.map((item) => (
             <ComboboxOption
               key={item.id}
               value={item}
@@ -43,6 +47,11 @@ function CustomComboBox({
               {item.name}
             </ComboboxOption>
           ))}
+          {totalMatches > MAX_RESULTS && (
+            <p className="px-3 py-2 text-xs text-gray-400 border-t">
+              Showing {MAX_RESULTS} of {totalMatches} — keep typing to narrow results
+            </p>
+          )}
         </ComboboxOptions>
       </div>
     </Combobox>
