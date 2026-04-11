@@ -1,17 +1,25 @@
-import {
-  Trash2,
-  Edit,
-  Heart,
-  Shield,
-  Zap,
-  HeartPlus,
-  ShieldPlus,
-} from "lucide-react";
+import { useState } from "react";
+import { Trash2, Edit, Heart, Shield, Zap, ChevronUp, ChevronDown } from "lucide-react";
 
-// TODO:
-// Heal - Add hp to current HP, but not above max HP
-// Damage - Subtract hp from current HP (starting with temp HP)
-// Add temp HP - Add to bonus health
+function hpBarColor(current, max) {
+  if (max === 0) return "bg-gray-400";
+  const pct = current / max;
+  if (pct >= 0.75) return "bg-green-500";
+  if (pct >= 0.5) return "bg-yellow-400";
+  if (pct >= 0.25) return "bg-orange-500";
+  if (pct > 0) return "bg-red-600";
+  return "bg-gray-700";
+}
+
+function hpTextColor(current, max) {
+  if (max === 0) return "text-gray-500";
+  const pct = current / max;
+  if (pct >= 0.75) return "text-green-600";
+  if (pct >= 0.5) return "text-yellow-600";
+  if (pct >= 0.25) return "text-orange-500";
+  if (pct > 0) return "text-red-600";
+  return "text-gray-600";
+}
 
 function InitiativeItem({
   id,
@@ -24,64 +32,183 @@ function InitiativeItem({
   initiative,
   onDelete,
   onEdit,
+  onUpdate,
+  onMoveUp,
+  onMoveDown,
+  isCurrentTurn,
+  isFirst,
+  isLast,
 }) {
+  const [amount, setAmount] = useState("");
+
+  const parseAmount = () => {
+    const n = parseInt(amount, 10);
+    return isNaN(n) || n <= 0 ? null : n;
+  };
+
+  const handleDamage = () => {
+    const dmg = parseAmount();
+    if (dmg === null) return;
+    let remainingDmg = dmg;
+    let newTempHp = temporaryHp;
+    let newCurrentHp = currentHp;
+    if (newTempHp > 0) {
+      const absorbed = Math.min(newTempHp, remainingDmg);
+      newTempHp -= absorbed;
+      remainingDmg -= absorbed;
+    }
+    newCurrentHp = Math.max(0, newCurrentHp - remainingDmg);
+    onUpdate(id, { currentHp: newCurrentHp, temporaryHp: newTempHp });
+    setAmount("");
+  };
+
+  const handleHeal = () => {
+    const heal = parseAmount();
+    if (heal === null) return;
+    onUpdate(id, { currentHp: Math.min(maxHp, currentHp + heal) });
+    setAmount("");
+  };
+
+  const handleSetTempHp = () => {
+    const temp = parseAmount();
+    if (temp === null) return;
+    onUpdate(id, { temporaryHp: Math.max(temporaryHp, temp) });
+    setAmount("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleDamage();
+  };
+
+  const hpPct = maxHp > 0 ? Math.max(0, Math.min(1, currentHp / maxHp)) : 0;
+
   return (
     <div
-      className="bg-[#edf1f2] rounded-xl flex justify-between items-center p-3 gap-6 shadow-md shadow-[#b6ad90] hover:shadow-lg transition-shadow"
-      key={id}
+      className={`rounded-xl p-3 shadow-md transition-all ${
+        isCurrentTurn
+          ? "bg-yellow-50 border-l-4 border-yellow-400 shadow-yellow-200"
+          : "bg-[#edf1f2] border-l-4 border-transparent shadow-[#b6ad90]"
+      }`}
     >
-      <p className="text-4xl font-bold flex-1 text-[#3a1c04]">{name}</p>
-      <div className="flex items-center gap-6 text-xl font-semibold">
-        <div className="flex flex-col items-start gap-2">
-          <p className="flex items-center gap-2" title="Total HP">
-            <Heart className="w-8 h-8 fill-red-600 text-3xl" strokeWidth={1} />
-            <span className="text-3xl">
-              <span className={temporaryHp > 0 ? "text-green-300" : ""}>
-                {currentHp + temporaryHp}
-              </span>
-              /{maxHp}
-            </span>
-          </p>
-          <p className="flex items-center gap-2" title="Temporary HP">
-            <HeartPlus
-              className="w-8 h-8 fill-green-300 text-3xl"
-              strokeWidth={1}
-            />
-            <span className="text-3xl">{temporaryHp}</span>
-          </p>
+      {/* Main row */}
+      <div className="flex items-center gap-3">
+        {/* Reorder buttons */}
+        <div className="flex flex-col gap-0.5">
+          <button
+            onClick={() => onMoveUp(id)}
+            disabled={isFirst}
+            className="text-gray-400 hover:text-gray-700 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            title="Move up"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => onMoveDown(id)}
+            disabled={isLast}
+            className="text-gray-400 hover:text-gray-700 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
+            title="Move down"
+          >
+            <ChevronDown className="w-5 h-5" />
+          </button>
         </div>
-        <div className="flex flex-col items-start gap-2">
-          <p className="flex items-center gap-2" title="Total AC">
-            <Shield className="w-8 h-8 fill-gray-300" strokeWidth={1} />
-            <span className={`text-3xl ${bonusAc > 0 ? "text-green-300" : ""}`}>
-              {ac + bonusAc}
-            </span>
-          </p>
-          <p className="flex items-center gap-2" title="Bonus AC">
-            <ShieldPlus className="w-8 h-8 fill-green-300" strokeWidth={1} />
-            <span className="text-3xl">{bonusAc}</span>
-          </p>
-        </div>
-        <p className="flex items-center gap-2" title="Initiative">
-          <Zap className="w-8 h-8 fill-yellow-100" strokeWidth={1} />
-          <span className="text-3xl">{initiative}</span>
+
+        {/* Name */}
+        <p
+          className={`text-2xl font-bold flex-1 truncate ${
+            isCurrentTurn ? "text-yellow-800" : "text-[#3a1c04]"
+          }`}
+        >
+          {name}
         </p>
+
+        {/* Stats */}
+        <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-1" title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}>
+            <Heart className="w-5 h-5 fill-red-500 text-red-500" strokeWidth={1} />
+            <span className={`text-xl font-semibold ${hpTextColor(currentHp, maxHp)}`}>
+              {currentHp}
+              {temporaryHp > 0 && (
+                <span className="text-green-600 text-base">+{temporaryHp}</span>
+              )}
+            </span>
+            <span className="text-gray-400 text-base">/{maxHp}</span>
+          </div>
+
+          <div className="flex items-center gap-1" title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}>
+            <Shield className="w-5 h-5 fill-slate-300" strokeWidth={1} />
+            <span className="text-xl font-semibold">{ac + bonusAc}</span>
+            {bonusAc > 0 && (
+              <span className="text-green-600 text-sm">+{bonusAc}</span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1" title="Initiative">
+            <Zap className="w-5 h-5 fill-yellow-200" strokeWidth={1} />
+            <span className="text-xl font-semibold">{initiative}</span>
+          </div>
+        </div>
+
+        {/* Edit / Delete */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => onEdit(id)}
+            className="w-9 h-9 flex items-center justify-center text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-full transition-colors cursor-pointer"
+            title="Edit"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => onDelete(id)}
+            className="w-9 h-9 flex items-center justify-center text-red-600 bg-red-100 hover:bg-red-200 rounded-full transition-colors cursor-pointer"
+            title="Delete"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col items-center gap-2 ml-3">
+
+      {/* Health bar */}
+      <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-300 ${hpBarColor(currentHp, maxHp)}`}
+          style={{ width: `${hpPct * 100}%` }}
+        />
+      </div>
+
+      {/* Quick actions */}
+      <div className="mt-2 flex items-center gap-2 flex-wrap">
+        <input
+          type="number"
+          min="1"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Amount"
+          className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#806c39]"
+        />
         <button
-          onClick={() => onDelete(id)}
-          className="w-12 h-12 flex items-center justify-center text-red-600 bg-red-100 hover:text-red-800  hover:bg-red-200 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 transition-colors cursor-pointer"
-          title="Delete"
+          onClick={handleDamage}
+          className="px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200 font-medium cursor-pointer"
+          title="Apply damage (temp HP absorbs first)"
         >
-          <Trash2 className="w-6 h-6" />
+          Damage
         </button>
         <button
-          onClick={() => onEdit(id)}
-          className="w-12 h-12 flex items-center justify-center text-blue-600 bg-blue-100 hover:text-blue-800  hover:bg-blue-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors cursor-pointer"
-          title="Edit"
+          onClick={handleHeal}
+          className="px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200 font-medium cursor-pointer"
         >
-          <Edit className="w-6 h-6" />
+          Heal
         </button>
+        <button
+          onClick={handleSetTempHp}
+          className="px-3 py-1 text-sm rounded bg-teal-100 text-teal-700 hover:bg-teal-200 font-medium cursor-pointer"
+          title="Set temp HP (uses highest value per D&D rules)"
+        >
+          +Temp HP
+        </button>
+        {temporaryHp > 0 && (
+          <span className="text-sm text-teal-600 font-medium">Temp: {temporaryHp}</span>
+        )}
       </div>
     </div>
   );
