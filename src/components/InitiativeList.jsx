@@ -2,7 +2,7 @@ import InitiativeItem from "./InitiativeItem";
 
 function InitiativeList({
   initiativeItems,
-  currentTurn,
+  currentTurnId,
   onDelete,
   onEdit,
   onUpdate,
@@ -15,7 +15,7 @@ function InitiativeList({
         <InitiativeItem
           key={item.id}
           {...item}
-          isCurrentTurn={index === currentTurn}
+          isCurrentTurn={item.id === currentTurnId || (currentTurnId === null && index === 0)}
           isFirst={index === 0}
           isLast={index === initiativeItems.length - 1}
           onDelete={onDelete}

@@ -7,8 +7,14 @@ function App() {
   const [initiativeItems, setInitiativeItems] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [currentTurn, setCurrentTurn] = useState(0);
+  const [currentTurnId, setCurrentTurnId] = useState(null);
   const [round, setRound] = useState(1);
+
+  const getCurrentIndex = (items, turnId) => {
+    if (turnId === null) return 0;
+    const idx = items.findIndex((i) => i.id === turnId);
+    return idx === -1 ? 0 : idx;
+  };
 
   const handleAdd = (newCharacter) => {
     setInitiativeItems((prev) =>
@@ -32,9 +38,11 @@ function App() {
     const next = initiativeItems.filter((item) => item.id !== id);
     setInitiativeItems(next);
     if (next.length === 0) {
-      setCurrentTurn(0);
-    } else if (currentTurn >= next.length) {
-      setCurrentTurn(next.length - 1);
+      setCurrentTurnId(null);
+    } else if (id === currentTurnId) {
+      const oldIdx = initiativeItems.findIndex((i) => i.id === id);
+      const newIdx = Math.min(oldIdx, next.length - 1);
+      setCurrentTurnId(next[newIdx].id);
     }
   };
 
@@ -72,33 +80,35 @@ function App() {
 
   const handleNextTurn = () => {
     if (initiativeItems.length === 0) return;
-    const next = currentTurn + 1;
+    const idx = getCurrentIndex(initiativeItems, currentTurnId);
+    const next = idx + 1;
     if (next >= initiativeItems.length) {
       setRound((r) => r + 1);
-      setCurrentTurn(0);
+      setCurrentTurnId(initiativeItems[0].id);
     } else {
-      setCurrentTurn(next);
+      setCurrentTurnId(initiativeItems[next].id);
     }
   };
 
   const handlePrevTurn = () => {
     if (initiativeItems.length === 0) return;
-    if (currentTurn === 0) {
+    const idx = getCurrentIndex(initiativeItems, currentTurnId);
+    if (idx === 0) {
       setRound((r) => Math.max(1, r - 1));
-      setCurrentTurn(initiativeItems.length - 1);
+      setCurrentTurnId(initiativeItems[initiativeItems.length - 1].id);
     } else {
-      setCurrentTurn(currentTurn - 1);
+      setCurrentTurnId(initiativeItems[idx - 1].id);
     }
   };
 
   const handleResetCombat = () => {
-    setCurrentTurn(0);
+    setCurrentTurnId(null);
     setRound(1);
   };
 
   const handleClearAll = () => {
     setInitiativeItems([]);
-    setCurrentTurn(0);
+    setCurrentTurnId(null);
     setRound(1);
     setIsEditing(false);
     setEditingItem(null);
@@ -112,7 +122,7 @@ function App() {
             <span className="text-lg font-bold text-[#3a1c04]">Round {round}</span>
             <span className="text-gray-400">|</span>
             <span className="text-gray-700 font-medium">
-              {initiativeItems[currentTurn]?.name}&apos;s turn
+              {initiativeItems[getCurrentIndex(initiativeItems, currentTurnId)]?.name}&apos;s turn
             </span>
           </div>
           <div className="flex gap-2">
@@ -146,7 +156,7 @@ function App() {
 
       <InitiativeList
         initiativeItems={initiativeItems}
-        currentTurn={currentTurn}
+        currentTurnId={currentTurnId}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onUpdate={handleUpdate}
