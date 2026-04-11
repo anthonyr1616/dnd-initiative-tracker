@@ -69,104 +69,135 @@ function InitiativeForm({
     setEditingItem(null);
   };
 
+  const inputClass =
+    "rounded-md border border-gray-300 px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const labelClass = "block text-xs font-medium text-gray-500 mb-1";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto p-4 bg-white rounded-xl shadow-[#b6ad90] shadow-lg"
+      className="w-full max-w-2xl mx-auto p-5 bg-white rounded-xl shadow-[#b6ad90] shadow-lg"
     >
-      <div className="flex flex-wrap gap-2 items-center">
+      <div className="mb-4">
+        <label className={labelClass}>Name</label>
         <input
           type="text"
-          placeholder="Name"
+          placeholder="Character or monster name"
           value={name}
           required
           onChange={(e) => setName(e.target.value)}
-          className="flex-1 min-w-[120px] rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputClass}
         />
-        <div className="flex flex-col w-32 gap-1">
-          <input
-            type="number"
-            max="999"
-            min="0"
-            placeholder="Max HP"
-            value={maxHp}
-            onChange={(e) => {
-              setMaxHp(e.target.value);
-              if (!isEditing) setCurrentHp(e.target.value);
-            }}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="number"
-            max="999"
-            placeholder="Current HP"
-            value={currentHp}
-            onChange={(e) => setCurrentHp(Math.min(e.target.value, maxHp))}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="number"
-            max="999"
-            min="0"
-            placeholder="Temporary HP"
-            value={temporaryHp}
-            onChange={(e) => setTemporaryHp(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="flex flex-col gap-1 w-25">
-          <input
-            type="number"
-            max="999"
-            placeholder="Base AC"
-            value={ac}
-            onChange={(e) => setAc(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <input
-            type="number"
-            max="999"
-            placeholder="Bonus AC"
-            value={bonusAc}
-            onChange={(e) => setBonusAc(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <input
-          type="number"
-          max="999"
-          placeholder="Initiative"
-          value={initiative}
-          onChange={(e) => setInitiative(e.target.value)}
-          className="w-28 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      </div>
+      <div className="flex flex-wrap gap-4 mb-4">
+        <fieldset className="flex-1 min-w-[180px] border border-gray-200 rounded-lg px-3 pt-1 pb-3">
+          <legend className="text-xs font-semibold text-gray-500 px-1">Hit Points</legend>
+          <div className="flex gap-2 mt-1">
+            <div className="flex-1">
+              <label className={labelClass}>Max</label>
+              <input
+                type="number"
+                max="999"
+                min="0"
+                placeholder="—"
+                value={maxHp}
+                onChange={(e) => {
+                  setMaxHp(e.target.value);
+                  if (!isEditing) setCurrentHp(e.target.value);
+                }}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex-1">
+              <label className={labelClass}>Current</label>
+              <input
+                type="number"
+                max="999"
+                placeholder="—"
+                value={currentHp}
+                onChange={(e) => setCurrentHp(Math.min(e.target.value, maxHp))}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex-1">
+              <label className={labelClass}>Temp</label>
+              <input
+                type="number"
+                max="999"
+                min="0"
+                placeholder="—"
+                value={temporaryHp}
+                onChange={(e) => setTemporaryHp(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </fieldset>
+        <fieldset className="min-w-[140px] border border-gray-200 rounded-lg px-3 pt-1 pb-3">
+          <legend className="text-xs font-semibold text-gray-500 px-1">Armor Class</legend>
+          <div className="flex gap-2 mt-1">
+            <div className="flex-1">
+              <label className={labelClass}>Base</label>
+              <input
+                type="number"
+                max="999"
+                placeholder="—"
+                value={ac}
+                onChange={(e) => setAc(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div className="flex-1">
+              <label className={labelClass}>Bonus</label>
+              <input
+                type="number"
+                max="999"
+                placeholder="—"
+                value={bonusAc}
+                onChange={(e) => setBonusAc(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </fieldset>
 
-        <div className="flex flex-col gap-1">
-          {isEditing ? (
-            <>
-              <button
-                type="submit"
-                className="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="rounded-md bg-gray-400 px-4 py-2 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
+        <div className="flex flex-col justify-end min-w-[80px]">
+          <label className={labelClass}>Initiative</label>
+          <input
+            type="number"
+            max="999"
+            placeholder="—"
+            value={initiative}
+            onChange={(e) => setInitiative(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+      </div>
+      <div className="flex justify-end gap-2">
+        {isEditing ? (
+          <>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-md bg-green-600 px-5 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              Add
+              Save
             </button>
-          )}
-        </div>
+          </>
+        ) : (
+          <button
+            type="submit"
+            className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Add to Initiative
+          </button>
+        )}
       </div>
     </form>
   );
