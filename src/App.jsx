@@ -1,14 +1,38 @@
 import "./App.css";
 import InitiativeForm from "./components/InitiativeForm";
 import InitiativeList from "./components/InitiativeList";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const STORAGE_KEY = "dnd-initiative-tracker";
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {
+    console.error("Failed to load state from localStorage");
+  }
+  return null;
+}
 
 function App() {
-  const [initiativeItems, setInitiativeItems] = useState([]);
+  const saved = loadState();
+  const [initiativeItems, setInitiativeItems] = useState(
+    saved?.initiativeItems ?? [],
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [currentTurnId, setCurrentTurnId] = useState(null);
-  const [round, setRound] = useState(1);
+  const [currentTurnId, setCurrentTurnId] = useState(
+    saved?.currentTurnId ?? null,
+  );
+  const [round, setRound] = useState(saved?.round ?? 1);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ initiativeItems, currentTurnId, round }),
+    );
+  }, [initiativeItems, currentTurnId, round]);
 
   const getCurrentIndex = (items, turnId) => {
     if (turnId === null) return 0;
@@ -18,15 +42,17 @@ function App() {
 
   const handleAdd = (newCharacter) => {
     setInitiativeItems((prev) =>
-      [...prev, newCharacter].sort((a, b) => b.initiative - a.initiative)
+      [...prev, newCharacter].sort((a, b) => b.initiative - a.initiative),
     );
   };
 
   const handleSave = (updatedCharacter) => {
     setInitiativeItems((prev) =>
       prev
-        .map((item) => (item.id === updatedCharacter.id ? updatedCharacter : item))
-        .sort((a, b) => b.initiative - a.initiative)
+        .map((item) =>
+          item.id === updatedCharacter.id ? updatedCharacter : item,
+        )
+        .sort((a, b) => b.initiative - a.initiative),
     );
   };
 
@@ -54,7 +80,7 @@ function App() {
 
   const handleUpdate = (id, changes) => {
     setInitiativeItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...changes } : item))
+      prev.map((item) => (item.id === id ? { ...item, ...changes } : item)),
     );
   };
 
@@ -119,10 +145,16 @@ function App() {
       {initiativeItems.length > 0 && (
         <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-md shadow-[#b6ad90]">
           <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-[#3a1c04]">Round {round}</span>
+            <span className="text-lg font-bold text-[#3a1c04]">
+              Round {round}
+            </span>
             <span className="text-gray-400">|</span>
             <span className="text-gray-700 font-medium">
-              {initiativeItems[getCurrentIndex(initiativeItems, currentTurnId)]?.name}&apos;s turn
+              {
+                initiativeItems[getCurrentIndex(initiativeItems, currentTurnId)]
+                  ?.name
+              }
+              &apos;s turn
             </span>
           </div>
           <div className="flex gap-2">
