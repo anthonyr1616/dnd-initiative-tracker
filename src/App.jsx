@@ -1,4 +1,5 @@
 import "./App.css";
+import styles from "./App.module.css";
 import InitiativeForm from "./components/InitiativeForm";
 import InitiativeList from "./components/InitiativeList";
 import { useState, useEffect } from "react";
@@ -143,13 +144,13 @@ function App() {
   return (
     <div className="flex flex-col max-w-7xl mx-auto p-4 gap-4">
       {initiativeItems.length > 0 && (
-        <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-md shadow-[#b6ad90]">
+        <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${styles.turnTracker}`}>
           <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-[#3a1c04]">
+            <span className={`text-lg font-bold ${styles.roundText}`}>
               Round {round}
             </span>
-            <span className="text-gray-400">|</span>
-            <span className="text-gray-700 font-medium">
+            <span className={styles.divider}>|</span>
+            <span className={`font-medium ${styles.turnName}`}>
               {
                 initiativeItems[getCurrentIndex(initiativeItems, currentTurnId)]
                   ?.name
@@ -160,25 +161,25 @@ function App() {
           <div className="flex gap-2">
             <button
               onClick={handlePrevTurn}
-              className="px-3 py-1.5 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium cursor-pointer"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.navBtn}`}
             >
               ← Prev
             </button>
             <button
               onClick={handleNextTurn}
-              className="px-4 py-1.5 rounded-md bg-[#806c39] text-white hover:bg-[#6b5a30] text-sm font-medium cursor-pointer"
+              className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
             >
               Next →
             </button>
             <button
               onClick={handleResetCombat}
-              className="px-3 py-1.5 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 text-sm font-medium cursor-pointer"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.resetBtn}`}
             >
               Reset
             </button>
             <button
               onClick={handleClearAll}
-              className="px-3 py-1.5 rounded-md bg-red-100 text-red-700 hover:bg-red-200 text-sm font-medium cursor-pointer"
+              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
             >
               Clear All
             </button>

@@ -1,0 +1,118 @@
+/* ── Card ── */
+.card {
+  background: var(--color-surface-card);
+  border-left: 4px solid transparent;
+  box-shadow: 0 4px 6px -1px var(--color-brand-shadow);
+}
+
+.cardActive {
+  background: var(--color-active-bg);
+  border-left-color: var(--color-active-border);
+  box-shadow: 0 4px 6px -1px var(--color-active-shadow);
+}
+
+/* ── Name ── */
+.name {
+  color: var(--color-brand-dark);
+}
+
+.nameActive {
+  color: var(--color-active-text);
+}
+
+/* ── Reorder buttons ── */
+.reorderBtn {
+  color: var(--color-text-faint);
+}
+.reorderBtn:hover {
+  color: var(--color-text-primary);
+}
+
+/* ── Icons ── */
+.heartIcon {
+  fill: var(--color-icon-heart);
+  color: var(--color-icon-heart);
+}
+
+.shieldIcon {
+  fill: var(--color-icon-shield);
+}
+
+.zapIcon {
+  fill: var(--color-icon-zap);
+}
+
+/* ── HP values ── */
+.hpValue[data-status="none"]    { color: var(--color-hp-text-none); }
+.hpValue[data-status="healthy"] { color: var(--color-hp-text-healthy); }
+.hpValue[data-status="good"]    { color: var(--color-hp-text-good); }
+.hpValue[data-status="warn"]    { color: var(--color-hp-text-warn); }
+.hpValue[data-status="low"]     { color: var(--color-hp-text-low); }
+.hpValue[data-status="dead"]    { color: var(--color-hp-text-dead); }
+
+.hpMax {
+  color: var(--color-text-faint);
+}
+
+.tempBonus {
+  color: var(--color-temp-bonus);
+}
+
+.tempDisplay {
+  color: var(--color-temp-display);
+}
+
+.bonusAc {
+  color: var(--color-temp-bonus);
+}
+
+.hpTrack {
+  background: var(--color-hp-bar-track);
+}
+
+.hpBar[data-status="none"]    { background: var(--color-hp-bar-none); }
+.hpBar[data-status="healthy"] { background: var(--color-hp-bar-healthy); }
+.hpBar[data-status="good"]    { background: var(--color-hp-bar-good); }
+.hpBar[data-status="warn"]    { background: var(--color-hp-bar-warn); }
+.hpBar[data-status="low"]     { background: var(--color-hp-bar-low); }
+.hpBar[data-status="dead"]    { background: var(--color-hp-bar-dead); }
+
+.amountInput {
+  border-color: var(--color-border);
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
+}
+.amountInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--color-focus-ring-brand);
+}
+
+.damageBtn {
+  background: var(--color-btn-damage-bg);
+  color: var(--color-btn-damage-text);
+}
+.damageBtn:hover { background: var(--color-btn-damage-hover); }
+
+.healBtn {
+  background: var(--color-btn-heal-bg);
+  color: var(--color-btn-heal-text);
+}
+.healBtn:hover { background: var(--color-btn-heal-hover); }
+
+.tempHpBtn {
+  background: var(--color-btn-temp-bg);
+  color: var(--color-btn-temp-text);
+}
+.tempHpBtn:hover { background: var(--color-btn-temp-hover); }
+
+.editBtn {
+  background: var(--color-btn-edit-bg);
+  color: var(--color-btn-edit-text);
+}
+.editBtn:hover { background: var(--color-btn-edit-hover); }
+
+.deleteBtn {
+  background: var(--color-btn-delete-bg);
+  color: var(--color-btn-delete-text);
+}
+.deleteBtn:hover { background: var(--color-btn-delete-hover); }

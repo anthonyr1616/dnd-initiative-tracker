@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import styles from "./InitiativeForm.module.css";
 
 function InitiativeForm({
   onAdd,
@@ -69,32 +70,29 @@ function InitiativeForm({
     setEditingItem(null);
   };
 
-  const inputClass =
-    "rounded-md border border-gray-300 px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500";
-  const labelClass = "block text-xs font-medium text-gray-500 mb-1";
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto p-5 bg-white rounded-xl shadow-[#b6ad90] shadow-lg"
+      className={`w-full max-w-2xl mx-auto p-5 rounded-xl ${styles.form}`}
     >
       <div className="mb-4">
-        <label className={labelClass}>Name</label>
+        <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Name</label>
         <input
           type="text"
           placeholder="Character or monster name"
           value={name}
           required
           onChange={(e) => setName(e.target.value)}
-          className={inputClass}
+          className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
         />
       </div>
+
       <div className="flex flex-wrap gap-4 mb-4">
-        <fieldset className="flex-1 min-w-[180px] border border-gray-200 rounded-lg px-3 pt-1 pb-3">
-          <legend className="text-xs font-semibold text-gray-500 px-1">Hit Points</legend>
+        <fieldset className={`flex-1 min-w-[180px] border rounded-lg px-3 pt-1 pb-3 ${styles.fieldset}`}>
+          <legend className={`text-xs font-semibold px-1 ${styles.legend}`}>Hit Points</legend>
           <div className="flex gap-2 mt-1">
             <div className="flex-1">
-              <label className={labelClass}>Max</label>
+              <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Max</label>
               <input
                 type="number"
                 max="999"
@@ -105,22 +103,22 @@ function InitiativeForm({
                   setMaxHp(e.target.value);
                   if (!isEditing) setCurrentHp(e.target.value);
                 }}
-                className={inputClass}
+                className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
               />
             </div>
             <div className="flex-1">
-              <label className={labelClass}>Current</label>
+              <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Current</label>
               <input
                 type="number"
                 max="999"
                 placeholder="—"
                 value={currentHp}
                 onChange={(e) => setCurrentHp(Math.min(e.target.value, maxHp))}
-                className={inputClass}
+                className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
               />
             </div>
             <div className="flex-1">
-              <label className={labelClass}>Temp</label>
+              <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Temp</label>
               <input
                 type="number"
                 max="999"
@@ -128,64 +126,66 @@ function InitiativeForm({
                 placeholder="—"
                 value={temporaryHp}
                 onChange={(e) => setTemporaryHp(e.target.value)}
-                className={inputClass}
+                className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
               />
             </div>
           </div>
         </fieldset>
-        <fieldset className="min-w-[140px] border border-gray-200 rounded-lg px-3 pt-1 pb-3">
-          <legend className="text-xs font-semibold text-gray-500 px-1">Armor Class</legend>
+
+        <fieldset className={`min-w-[140px] border rounded-lg px-3 pt-1 pb-3 ${styles.fieldset}`}>
+          <legend className={`text-xs font-semibold px-1 ${styles.legend}`}>Armor Class</legend>
           <div className="flex gap-2 mt-1">
             <div className="flex-1">
-              <label className={labelClass}>Base</label>
+              <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Base</label>
               <input
                 type="number"
                 max="999"
                 placeholder="—"
                 value={ac}
                 onChange={(e) => setAc(e.target.value)}
-                className={inputClass}
+                className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
               />
             </div>
             <div className="flex-1">
-              <label className={labelClass}>Bonus</label>
+              <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Bonus</label>
               <input
                 type="number"
                 max="999"
                 placeholder="—"
                 value={bonusAc}
                 onChange={(e) => setBonusAc(e.target.value)}
-                className={inputClass}
+                className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
               />
             </div>
           </div>
         </fieldset>
 
         <div className="flex flex-col justify-end min-w-[80px]">
-          <label className={labelClass}>Initiative</label>
+          <label className={`block text-xs font-medium mb-1 ${styles.label}`}>Initiative</label>
           <input
             type="number"
             max="999"
             placeholder="—"
             value={initiative}
             onChange={(e) => setInitiative(e.target.value)}
-            className={inputClass}
+            className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
           />
         </div>
       </div>
+
       <div className="flex justify-end gap-2">
         {isEditing ? (
           <>
             <button
               type="button"
               onClick={handleCancel}
-              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-md bg-green-600 px-5 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className={`rounded-md px-5 py-2 text-sm font-medium ${styles.saveBtn}`}
             >
               Save
             </button>
@@ -193,7 +193,7 @@ function InitiativeForm({
         ) : (
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`rounded-md px-5 py-2 text-sm font-medium ${styles.addBtn}`}
           >
             Add to Initiative
           </button>

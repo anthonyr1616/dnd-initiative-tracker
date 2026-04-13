@@ -1,24 +1,15 @@
 import { useState } from "react";
 import { Trash2, Edit, Heart, Shield, Zap, ChevronUp, ChevronDown } from "lucide-react";
+import styles from "./InitiativeItem.module.css";
 
-function hpBarColor(current, max) {
-  if (max === 0) return "bg-gray-400";
+function hpStatus(current, max) {
+  if (max === 0) return "none";
   const pct = current / max;
-  if (pct >= 0.75) return "bg-green-500";
-  if (pct >= 0.5) return "bg-yellow-400";
-  if (pct >= 0.25) return "bg-orange-500";
-  if (pct > 0) return "bg-red-600";
-  return "bg-gray-700";
-}
-
-function hpTextColor(current, max) {
-  if (max === 0) return "text-gray-500";
-  const pct = current / max;
-  if (pct >= 0.75) return "text-green-600";
-  if (pct >= 0.5) return "text-yellow-600";
-  if (pct >= 0.25) return "text-orange-500";
-  if (pct > 0) return "text-red-600";
-  return "text-gray-600";
+  if (pct >= 0.75) return "healthy";
+  if (pct >= 0.5) return "good";
+  if (pct >= 0.25) return "warn";
+  if (pct > 0) return "low";
+  return "dead";
 }
 
 function InitiativeItem({
@@ -81,14 +72,11 @@ function InitiativeItem({
   };
 
   const hpPct = maxHp > 0 ? Math.max(0, Math.min(1, currentHp / maxHp)) : 0;
+  const status = hpStatus(currentHp, maxHp);
 
   return (
     <div
-      className={`rounded-xl p-3 shadow-md transition-all ${
-        isCurrentTurn
-          ? "bg-yellow-50 border-l-4 border-yellow-400 shadow-yellow-200"
-          : "bg-[#edf1f2] border-l-4 border-transparent shadow-[#b6ad90]"
-      }`}
+      className={`rounded-xl p-3 transition-all ${styles.card} ${isCurrentTurn ? styles.cardActive : ""}`}
     >
       {/* Main row */}
       <div className="flex items-center gap-3">
@@ -96,7 +84,7 @@ function InitiativeItem({
           {canMoveUp ? (
             <button
               onClick={() => onMoveUp(id)}
-              className="text-gray-400 hover:text-gray-700 cursor-pointer"
+              className={`cursor-pointer ${styles.reorderBtn}`}
               title="Move up"
             >
               <ChevronUp className="w-5 h-5" />
@@ -107,7 +95,7 @@ function InitiativeItem({
           {canMoveDown ? (
             <button
               onClick={() => onMoveDown(id)}
-              className="text-gray-400 hover:text-gray-700 cursor-pointer"
+              className={`cursor-pointer ${styles.reorderBtn}`}
               title="Move down"
             >
               <ChevronDown className="w-5 h-5" />
@@ -116,61 +104,71 @@ function InitiativeItem({
             <span className="w-5 h-5" />
           )}
         </div>
-        <p
-          className={`text-2xl font-bold flex-1 truncate ${
-            isCurrentTurn ? "text-yellow-800" : "text-[#3a1c04]"
-          }`}
-        >
+
+        <p className={`text-2xl font-bold flex-1 truncate ${styles.name} ${isCurrentTurn ? styles.nameActive : ""}`}>
           {name}
         </p>
+
         <div className="flex items-center gap-4 shrink-0">
-          <div className="flex items-center gap-1" title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}>
-            <Heart className="w-5 h-5 fill-red-500 text-red-500" strokeWidth={1} />
-            <span className={`text-xl font-semibold ${hpTextColor(currentHp, maxHp)}`}>
+          <div
+            className="flex items-center gap-1"
+            title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}
+          >
+            <Heart className={`w-5 h-5 ${styles.heartIcon}`} strokeWidth={1} />
+            <span className={`text-xl font-semibold ${styles.hpValue}`} data-status={status}>
               {currentHp}
               {temporaryHp > 0 && (
-                <span className="text-green-600 text-base">+{temporaryHp}</span>
+                <span className={`text-base ${styles.tempBonus}`}>+{temporaryHp}</span>
               )}
             </span>
-            <span className="text-gray-400 text-base">/{maxHp}</span>
+            <span className={`text-base ${styles.hpMax}`}>/{maxHp}</span>
           </div>
 
-          <div className="flex items-center gap-1" title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}>
-            <Shield className="w-5 h-5 fill-slate-300" strokeWidth={1} />
+          <div
+            className="flex items-center gap-1"
+            title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}
+          >
+            <Shield className={`w-5 h-5 ${styles.shieldIcon}`} strokeWidth={1} />
             <span className="text-xl font-semibold">{ac + bonusAc}</span>
             {bonusAc > 0 && (
-              <span className="text-green-600 text-sm">+{bonusAc}</span>
+              <span className={`text-sm ${styles.bonusAc}`}>+{bonusAc}</span>
             )}
           </div>
 
           <div className="flex items-center gap-1" title="Initiative">
-            <Zap className="w-5 h-5 fill-yellow-200" strokeWidth={1} />
+            <Zap className={`w-5 h-5 ${styles.zapIcon}`} strokeWidth={1} />
             <span className="text-xl font-semibold">{initiative}</span>
           </div>
         </div>
+
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => onEdit(id)}
-            className="w-9 h-9 flex items-center justify-center text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-full transition-colors cursor-pointer"
+            className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer ${styles.editBtn}`}
             title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(id)}
-            className="w-9 h-9 flex items-center justify-center text-red-600 bg-red-100 hover:bg-red-200 rounded-full transition-colors cursor-pointer"
+            className={`w-9 h-9 flex items-center justify-center rounded-full transition-colors cursor-pointer ${styles.deleteBtn}`}
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>
-      <div className="mt-2 h-2 rounded-full bg-gray-200 overflow-hidden">
+
+      {/* HP bar */}
+      <div className={`mt-2 h-2 rounded-full overflow-hidden ${styles.hpTrack}`}>
         <div
-          className={`h-full rounded-full transition-all duration-300 ${hpBarColor(currentHp, maxHp)}`}
+          className={`h-full rounded-full transition-all duration-300 ${styles.hpBar}`}
+          data-status={status}
           style={{ width: `${hpPct * 100}%` }}
         />
       </div>
+
+      {/* Action row */}
       <div className="mt-2 flex items-center gap-2 flex-wrap">
         <input
           type="number"
@@ -179,31 +177,28 @@ function InitiativeItem({
           onChange={(e) => setAmount(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Amount"
-          className="w-24 rounded border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#806c39]"
+          className={`w-24 rounded border px-2 py-1 text-sm ${styles.amountInput}`}
         />
         <button
           onClick={handleDamage}
-          className="px-3 py-1 text-sm rounded bg-red-100 text-red-700 hover:bg-red-200 font-medium cursor-pointer"
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.damageBtn}`}
           title="Apply damage (temp HP absorbs first)"
         >
           Damage
         </button>
         <button
           onClick={handleHeal}
-          className="px-3 py-1 text-sm rounded bg-green-100 text-green-700 hover:bg-green-200 font-medium cursor-pointer"
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.healBtn}`}
         >
           Heal
         </button>
         <button
           onClick={handleSetTempHp}
-          className="px-3 py-1 text-sm rounded bg-teal-100 text-teal-700 hover:bg-teal-200 font-medium cursor-pointer"
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.tempHpBtn}`}
           title="Set temp HP (uses highest value per D&D rules)"
         >
           +Temp HP
         </button>
-        {temporaryHp > 0 && (
-          <span className="text-sm text-teal-600 font-medium">Temp: {temporaryHp}</span>
-        )}
       </div>
     </div>
   );

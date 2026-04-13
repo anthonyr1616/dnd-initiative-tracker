@@ -1,0 +1,12 @@
+.header {
+  background: var(--color-brand);
+  color: #ffffff;
+}
+
+.navLink {
+  color: #ffffff;
+  text-decoration: none;
+}
+.navLink:hover {
+  text-decoration: underline;
+}

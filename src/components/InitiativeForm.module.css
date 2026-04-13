@@ -1,0 +1,62 @@
+.form {
+  background: var(--color-surface);
+  box-shadow: 0 10px 15px -3px var(--color-brand-shadow);
+}
+
+.label {
+  color: var(--color-text-label);
+}
+
+.input {
+  border-color: var(--color-border);
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
+}
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.fieldset {
+  border-color: var(--color-border-muted);
+}
+
+.legend {
+  color: var(--color-text-muted);
+}
+
+.cancelBtn {
+  border-color: var(--color-btn-cancel-border);
+  color: var(--color-btn-cancel-text);
+}
+.cancelBtn:hover {
+  background: var(--color-btn-cancel-hover);
+}
+.cancelBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring-muted);
+}
+
+.saveBtn {
+  background: var(--color-btn-save-bg);
+  color: #ffffff;
+}
+.saveBtn:hover {
+  background: var(--color-btn-save-hover);
+}
+.saveBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-btn-save-bg);
+}
+
+.addBtn {
+  background: var(--color-btn-add-bg);
+  color: #ffffff;
+}
+.addBtn:hover {
+  background: var(--color-btn-add-hover);
+}
+.addBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-btn-add-bg);
+}

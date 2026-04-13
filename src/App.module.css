@@ -1,0 +1,48 @@
+.turnTracker {
+  background: var(--color-surface);
+  box-shadow: 0 4px 6px -1px var(--color-brand-shadow);
+}
+
+.roundText {
+  color: var(--color-brand-dark);
+}
+
+.turnName {
+  color: var(--color-text-primary);
+}
+
+.divider {
+  color: var(--color-text-faint);
+}
+
+.navBtn {
+  background: var(--color-btn-nav-bg);
+  color: var(--color-btn-nav-text);
+}
+.navBtn:hover {
+  background: var(--color-btn-nav-hover);
+}
+
+.primaryBtn {
+  background: var(--color-btn-primary-bg);
+  color: #ffffff;
+}
+.primaryBtn:hover {
+  background: var(--color-btn-primary-hover);
+}
+
+.resetBtn {
+  background: var(--color-btn-nav-bg);
+  color: var(--color-btn-reset-text);
+}
+.resetBtn:hover {
+  background: var(--color-btn-nav-hover);
+}
+
+.clearBtn {
+  background: var(--color-btn-danger-bg);
+  color: var(--color-btn-danger-text);
+}
+.clearBtn:hover {
+  background: var(--color-btn-danger-hover);
+}

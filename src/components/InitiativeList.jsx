@@ -1,4 +1,5 @@
 import InitiativeItem from "./InitiativeItem";
+import styles from "./InitiativeList.module.css";
 
 function InitiativeList({
   initiativeItems,
@@ -10,7 +11,7 @@ function InitiativeList({
   onMoveDown,
 }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className={styles.list}>
       {initiativeItems.map((item, index) => (
         <InitiativeItem
           key={item.id}

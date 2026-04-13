@@ -1,0 +1,96 @@
+:root {
+  --color-brand: #8c1515;
+  --color-brand-hover: #6e1010;
+  --color-brand-dark: #1a0800;
+  --color-brand-shadow: rgba(100, 20, 20, 0.28);
+
+  --color-bg: #d8cdb8;
+  --color-surface: #faf4e6;
+  --color-surface-card: #f2e8d0;
+  --color-surface-hover: #ede0c4;
+
+  --color-active-bg: #fdf5d8;
+  --color-active-border: #c8a84c;
+  --color-active-shadow: rgba(200, 168, 76, 0.40);
+  --color-active-text: #3a1a00;
+
+  --color-hp-bar-healthy: #2e7d32;
+  --color-hp-bar-good: #c8a000;
+  --color-hp-bar-warn: #bf4e00;
+  --color-hp-bar-low: #a80000;
+  --color-hp-bar-none: #8c7c6c;
+  --color-hp-bar-dead: #2c2420;
+  --color-hp-bar-track: #c8b898;
+
+  --color-hp-text-healthy: #1a5c1a;
+  --color-hp-text-good: #8c6a00;
+  --color-hp-text-warn: #8c3800;
+  --color-hp-text-low: #8c0000;
+  --color-hp-text-none: #6c5c4c;
+  --color-hp-text-dead: #3c3028;
+
+  --color-icon-heart: #8c1515;
+  --color-icon-shield: #a89060;
+  --color-icon-zap: #c8a84c;
+
+  --color-temp-bonus: #1a5c1a;
+  --color-temp-display: #0a5248;
+
+  --color-text-primary: #231008;
+  --color-text-secondary: #3d1e0a;
+  --color-text-muted: #6a4e30;
+  --color-text-faint: #9c826a;
+  --color-text-label: #5a3e24;
+
+  --color-border: #b89a6a;
+  --color-border-muted: #d0bc90;
+
+  --color-input-bg: var(--color-surface);
+  --color-input-text: var(--color-text-primary);
+
+  --color-focus-ring: var(--color-brand);
+  --color-focus-ring-brand: var(--color-brand);
+  --color-focus-ring-muted: #9c826a;
+
+  --color-btn-nav-bg: #e8dbc0;
+  --color-btn-nav-text: #231008;
+  --color-btn-nav-hover: #ddd0b0;
+  --color-btn-reset-text: #3d1e0a;
+
+  --color-btn-primary-bg: var(--color-brand);
+  --color-btn-primary-hover: var(--color-brand-hover);
+
+  --color-btn-danger-bg: #f4d4d4;
+  --color-btn-danger-text: #6e0000;
+  --color-btn-danger-hover: #ecbcbc;
+
+  --color-btn-edit-bg: #e8dbc0;
+  --color-btn-edit-text: #3d1e0a;
+  --color-btn-edit-hover: #ddd0b0;
+
+  --color-btn-delete-bg: #f4d4d4;
+  --color-btn-delete-text: #6e0000;
+  --color-btn-delete-hover: #ecbcbc;
+
+  --color-btn-damage-bg: #f4d4d4;
+  --color-btn-damage-text: #6e0000;
+  --color-btn-damage-hover: #ecbcbc;
+
+  --color-btn-heal-bg: #d4edd4;
+  --color-btn-heal-text: #1a5c1a;
+  --color-btn-heal-hover: #c4e4c4;
+
+  --color-btn-temp-bg: #c8ede8;
+  --color-btn-temp-text: #0a5248;
+  --color-btn-temp-hover: #b8e0db;
+
+  --color-btn-save-bg: #1a5c1a;
+  --color-btn-save-hover: #145014;
+
+  --color-btn-add-bg: var(--color-brand);
+  --color-btn-add-hover: var(--color-brand-hover);
+
+  --color-btn-cancel-border: var(--color-border);
+  --color-btn-cancel-text: #3d1e0a;
+  --color-btn-cancel-hover: var(--color-surface-hover);
+}
