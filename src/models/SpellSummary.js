@@ -1,4 +1,4 @@
-import { createSpellId } from "../helpers/spellDataParser.js";
+import { createSpellId, formatSource } from "../helpers/spellDataParser.js";
 
 class SpellSummary {
   constructor({ id, name, level = 0, source = null, apiUrl = null }) {
@@ -24,8 +24,12 @@ class SpellSummary {
   }
 
   toString() {
-    const sourcePart = this.source ? ` - ${this.source}` : "";
+    const sourcePart = this.source ? ` - ${this.getFormattedSource()}` : "";
     return `${this.name}${sourcePart}`;
+  }
+
+  getFormattedSource() {
+    return formatSource(this.source);
   }
 }
 
