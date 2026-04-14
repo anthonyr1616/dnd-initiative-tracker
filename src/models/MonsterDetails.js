@@ -1,113 +1,99 @@
-class MonsterDetails {
-  constructor({
-    index,
-    name,
-    size,
-    type,
-    subtype,
-    alignment,
-    armor_class = [],
-    hit_points,
-    hit_dice,
-    hit_points_roll,
-    speed = {},
-    strength,
-    dexterity,
-    constitution,
-    intelligence,
-    wisdom,
-    charisma,
-    proficiencies = [],
-    damage_vulnerabilities = [],
-    damage_resistances = [],
-    damage_immunities = [],
-    condition_immunities = [],
-    senses = {},
-    languages = "",
-    challenge_rating,
-    proficiency_bonus,
-    xp,
-    special_abilities = [],
-    actions = [],
-    legendary_actions = [],
-    updated_at,
-    image,
-    forms = [],
-    reactions = [],
-    url,
-  }) {
-    this.id = index;
-    this.name = name;
-    this.size = size;
-    this.type = type;
-    this.subtype = subtype;
-    this.alignment = alignment;
-    this.armorClass = armor_class.map((ac) => ({
-      type: ac.type,
-      value: ac.value,
-      condition: ac.condition
-        ? {
-            id: ac.condition.index,
-            name: ac.condition.name,
-          }
-        : null,
+import { formatSource, parseTaggedText, parseSpellEntries } from "../helpers/spellDataParser.js";
 
-      armor: ac.armor
-        ? ac.armor.map((a) => ({
-            id: a.index,
-            name: a.name,
-          }))
-        : null,
-    }));
-    this.hitPoints = hit_points;
-    this.hitDice = hit_dice;
-    this.hitPointsRoll = hit_points_roll;
+class MonsterDetails {
+  constructor(monsterRecord = {}) {
+    const {
+      name,
+      source,
+      size = [],
+      type,
+      alignment = [],
+      ac = [],
+      hp,
+      speed = {},
+      str,
+      dex,
+      con,
+      int,
+      wis,
+      cha,
+      senses = [],
+      passive,
+      immune = [],
+      conditionImmune = [],
+      languages = [],
+      trait = [],
+      action = [],
+      legendary = [],
+      reaction = [],
+      cr,
+      xp,
+    } = monsterRecord;
+
+    this.id = monsterRecord.id || createMonsterId(name, source);
+    this.name = name;
+    this.source = source;
+    this.size = Array.isArray(size) ? size[0] : size; // e.g., "M"
+    this.type = typeof type === "object" ? type.type : type; // Handle both string and object types
+    this.alignment = alignment.join(", ");
+    this.armorClass = ac.map((acItem) => {
+      if (typeof acItem === "number") {
+        return { value: acItem };
+      }
+      return acItem; // object with type, value, etc.
+    });
+    this.hitPoints = hp?.average || hp?.special || hp;
+    this.hitDice = hp?.formula;
     this.speed = speed;
     this.stats = {
-      strength,
-      dexterity,
-      constitution,
-      intelligence,
-      wisdom,
-      charisma,
+      strength: str,
+      dexterity: dex,
+      constitution: con,
+      intelligence: int,
+      wisdom: wis,
+      charisma: cha,
     };
-    this.proficiencies = proficiencies.map((p) => ({
-      name: p.proficiency.name,
-      value: p.value,
-    }));
-    this.damageVulnerabilities = damage_vulnerabilities;
-    this.damageResistances = damage_resistances;
-    this.damageImmunities = damage_immunities;
-    this.conditionImmunities = condition_immunities.map((c) => c.name);
     this.senses = senses;
-    this.languages = languages;
-    this.challengeRating = challenge_rating;
-    this.proficiencyBonus = proficiency_bonus;
+    this.passivePerception = passive;
+    this.damageImmunities = immune;
+    this.conditionImmunities = conditionImmune;
+    this.languages = languages.join(", ");
+    this.traits = (trait || []).map((t) => ({
+      name: t.name,
+      description: parseSpellEntries(t.entries || []).join(" "),
+    }));
+    this.actions = (action || []).map((a) => ({
+      name: a.name,
+      description: parseSpellEntries(a.entries || []).join(" "),
+    }));
+    this.legendaryActions = (legendary || []).map((l) => ({
+      name: l.name,
+      description: parseSpellEntries(l.entries || []).join(" "),
+    }));
+    this.reactions = (reaction || []).map((r) => ({
+      name: r.name,
+      description: parseSpellEntries(r.entries || []).join(" "),
+    }));
+    this.challengeRating = cr;
     this.xp = xp;
-    this.specialAbilities = special_abilities.map((a) => ({
-      name: a.name,
-      desc: a.desc,
-      usage: a.usage,
-      damage: a.damage,
-    }));
-    this.actions = actions.map((a) => ({
-      name: a.name,
-      desc: a.desc,
-      attackBonus: a.attack_bonus,
-      damage: a.damage,
-      actionOptions: a.action_options,
-    }));
-    this.legendaryActions = legendary_actions.map((a) => ({
-      name: a.name,
-      desc: a.desc,
-      damage: a.damage,
-    }));
-    this.apiUrl = url;
-    this.updatedAt = updated_at ? new Date(updated_at) : null;
-    this.image = image;
-    this.forms = forms;
-    this.reactions = reactions;
   }
+
+  toString() {
+    return `${this.name}`;
+  }
+
+  getFormattedSource() {
+    return formatSource(this.source);
+  }
+}
+
+function createMonsterId(name, source = "unknown") {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  return `${source.toLowerCase()}-${slug}`;
 }
 
 export { MonsterDetails };

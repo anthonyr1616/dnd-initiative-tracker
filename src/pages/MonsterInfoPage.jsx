@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getAllMonsters, getMonster } from "../services/dndApi";
+import { getAllMonsters, getMonster } from "../services/monsterApi";
 import CustomComboBox from "../components/CustomComboBox";
 import MonsterCard from "../components/MonsterCard";
 
@@ -50,6 +50,7 @@ const MonsterInfoPage = () => {
         onChange={setSelectedMonster}
         ariaLabel="Monster"
         placeholder="Search monsters..."
+        displayFunction={(item) => item?.toString() ?? ""}
       />
       {monsterDetails && <MonsterCard monster={monsterDetails} />}
     </div>

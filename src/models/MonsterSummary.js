@@ -1,8 +1,20 @@
+import { formatSource } from "../helpers/spellDataParser.js";
+
 class MonsterSummary {
-  constructor({ index, name, url }) {
-    this.id = index;
+  constructor({ id, name, source = null, apiUrl = null }) {
+    this.id = id;
     this.name = name;
-    this.apiUrl = url;
+    this.source = source;
+    this.apiUrl = apiUrl;
+  }
+
+  toString() {
+    const sourcePart = this.source ? ` - ${this.getFormattedSource()}` : "";
+    return `${this.name}${sourcePart}`;
+  }
+
+  getFormattedSource() {
+    return formatSource(this.source);
   }
 }
 
