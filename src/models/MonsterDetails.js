@@ -40,7 +40,18 @@ class MonsterDetails {
       if (typeof acItem === "number") {
         return { value: acItem };
       }
-      return acItem; // object with type, value, etc.
+
+      if (typeof acItem === "object") {
+        return {
+          value: acItem.value ?? acItem.ac,
+          type: acItem.type,
+          condition: acItem.condition,
+          armor: acItem.armor,
+          from: acItem.from,
+        };
+      }
+
+      return { value: String(acItem) };
     });
     this.hitPoints = hp?.average || hp?.special || hp;
     this.hitDice = hp?.formula;

@@ -4,10 +4,38 @@ import StatLine from "./StatLine";
 
 export default function MonsterCard({ monster }) {
   const armorClassStrings = monster.armorClass.map((ac) => {
-    if (ac.type === "natural") return `${ac.value} (natural armor)`;
-    if (ac.condition) return `${ac.value} (${ac.condition})`;
-    if (ac.armor) return `${ac.value} (${ac.armor})`;
-    return `${ac.value}`;
+    const value = ac.value ?? ac.ac ?? ac;
+    const details = [];
+
+    if (ac.type && ac.type !== "natural") {
+      details.push(ac.type);
+    }
+
+    if (ac.from) {
+      if (Array.isArray(ac.from)) {
+        details.push(ac.from.join(", "));
+      } else {
+        details.push(ac.from);
+      }
+    }
+
+    if (ac.armor) {
+      if (Array.isArray(ac.armor)) {
+        details.push(ac.armor.map((item) => item.name || item).join(", "));
+      } else {
+        details.push(ac.armor.name ?? ac.armor);
+      }
+    }
+
+    if (ac.condition) {
+      details.push(ac.condition);
+    }
+
+    if (details.length > 0) {
+      return `${value} (${details.join(", ")})`;
+    }
+
+    return `${value}`;
   });
 
   const statArray = Object.entries(monster.stats).map(([name, value]) => ({
