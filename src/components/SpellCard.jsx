@@ -22,9 +22,18 @@ export default function SpellCard({ spell }) {
         {spell.material ? ` (${spell.material})` : ""}
       </StatLine>
       <StatLine label="Duration:">{spell.duration}</StatLine>
+      {spell.source && <StatLine label="Source:">{spell.getFormattedSource()}</StatLine>}
       {spell.description.map((paragraph, index) => (
-        <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
+        <ReactMarkdown key={`description-${index}`}>{paragraph}</ReactMarkdown>
       ))}
+      {spell.higherLevel && spell.higherLevel.length > 0 && (
+        <div className="mt-4">
+          <h3 className="font-semibold text-lg">At Higher Levels</h3>
+          {spell.higherLevel.map((paragraph, index) => (
+            <ReactMarkdown key={`higher-${index}`}>{paragraph}</ReactMarkdown>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

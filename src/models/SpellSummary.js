@@ -1,9 +1,22 @@
+import { createSpellId } from "../helpers/spellDataParser.js";
+
 class SpellSummary {
-  constructor({ index, name, level, url }) {
-    this.id = index;
+  constructor({ id, name, level = 0, source = null, apiUrl = null }) {
+    this.id = id;
     this.name = name;
     this.level = level;
-    this.apiUrl = url;
+    this.source = source;
+    this.apiUrl = apiUrl;
+  }
+
+  static fromRecord(record) {
+    return new SpellSummary({
+      id: createSpellId(record.name, record.source),
+      name: record.name,
+      level: record.level ?? 0,
+      source: record.source,
+      apiUrl: record.url || null,
+    });
   }
 
   isCantrip() {
@@ -11,7 +24,8 @@ class SpellSummary {
   }
 
   toString() {
-    return `${this.name} (Level ${this.level})`;
+    const sourcePart = this.source ? ` - ${this.source}` : "";
+    return `${this.name}${sourcePart}`;
   }
 }
 

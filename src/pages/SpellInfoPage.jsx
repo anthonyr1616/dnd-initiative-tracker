@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getAllSpells, getSpell } from "../services/dndApi";
+import { getAllSpells, getSpell } from "../services/spellApi";
 import CustomComboBox from "../components/CustomComboBox";
 import SpellCard from "../components/SpellCard";
 
@@ -50,6 +50,7 @@ const SpellInfoPage = () => {
         onChange={setSelectedSpell}
         ariaLabel="Spell"
         placeholder="Search spells..."
+        displayFunction={(item) => item?.toString() ?? ""}
       />
       {spellDetails && <SpellCard spell={spellDetails} />}
     </div>

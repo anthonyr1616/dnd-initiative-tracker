@@ -12,6 +12,7 @@ function CustomComboBox({
   onChange,
   ariaLabel = "",
   placeholder = "",
+  displayFunction = (item) => item?.name ?? "",
 }) {
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
@@ -31,7 +32,7 @@ function CustomComboBox({
       <div className="relative">
         <ComboboxInput
           aria-label={ariaLabel}
-          displayValue={(item) => item?.name ?? ""}
+          displayValue={displayFunction}
           onChange={(event) => setQuery(event.target.value)}
           className="w-full border rounded-lg px-3 py-2 shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder={placeholder}
@@ -44,7 +45,7 @@ function CustomComboBox({
               value={item}
               className="cursor-pointer px-3 py-2 data-[focus]:bg-blue-100"
             >
-              {item.name}
+              {displayFunction(item)}
             </ComboboxOption>
           ))}
           {totalMatches > MAX_RESULTS && (
