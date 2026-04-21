@@ -1,11 +1,15 @@
 import { calculateModifier } from "../helpers/helperMethods";
 import StatLine from "./StatLine";
 
+function formatItemName(name) {
+  return /[.!?:]$/.test(name) ? name : `${name}.`;
+}
+
 function renderPara(para, i) {
   if (para && typeof para === "object" && para.itemName) {
     return (
       <p key={i} className="ml-2">
-        <strong>{para.itemName}.</strong> {para.text}
+        <strong>{formatItemName(para.itemName)}</strong> {para.text}
       </p>
     );
   }
@@ -16,9 +20,9 @@ function EntryBlock({ name, description }) {
   const [first, ...rest] = Array.isArray(description) ? description : [description];
   return (
     <div className="mb-1">
-      <strong>{name}.</strong>{" "}
+      <strong>{formatItemName(name)}</strong>{" "}
       {first && typeof first === "object" && first.itemName
-        ? <><strong>{first.itemName}.</strong> {first.text}</>
+        ? <><strong>{formatItemName(first.itemName)}</strong> {first.text}</>
         : first}
       {rest.map((para, i) => renderPara(para, i))}
     </div>
@@ -67,19 +71,36 @@ export default function MonsterCard({ monster }) {
     mod: calculateModifier(value),
   }));
 
-  const speedArray = Object.entries(monster.speed).map(([key, value]) => {
-    if (key === "walk") return `${value} ft.`;
-    if (key === "fly") return `fly ${value.number || value} ft.${value.condition ? ` ${value.condition}` : ''}`;
-    if (key === "swim") return `swim ${value} ft.`;
-    if (key === "climb") return `climb ${value} ft.`;
-    return `${key} ${value}`;
+  const speedArray = Object.entries(monster.speed).flatMap(([key, value]) => {
+    if (key === "canHover") return [];
+    const hover = monster.speed.canHover ? " (hover)" : "";
+    if (key === "walk") return [`${value} ft.`];
+    if (key === "fly") {
+      const dist = value.number || value;
+      const condition = value.condition || hover;
+      return [`Fly ${dist} ft.${condition ? ` ${condition}` : ""}`];
+    }
+    if (key === "swim") return [`Swim ${value} ft.`];
+    if (key === "climb") return [`Climb ${value} ft.`];
+    if (key === "burrow") return [`Burrow ${value} ft.`];
+    return [`${key} ${value}`];
   });
 
   return (
     <div className="rounded-lg border border-[#4a2800] p-4 shadow-sm bg-[#faefd1]">
-      <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
-        {monster.name}
-      </h2>
+      <div className="flex items-start justify-between">
+        <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
+          {monster.name}
+        </h2>
+        {monster.source && (
+          <span
+            className="text-xs text-[#4a2800]/40 ml-2 mt-1 cursor-default shrink-0"
+            title={monster.getFormattedSource()}
+          >
+            {monster.source}
+          </span>
+        )}
+      </div>
       <p className="italic text-xs">
         {monster.size} {monster.type}, {monster.alignment}
       </p>
@@ -108,7 +129,6 @@ export default function MonsterCard({ monster }) {
       <StatLine label="Senses">{monster.senses.join(", ")}</StatLine>
       <StatLine label="Languages">{monster.languages}</StatLine>
       <StatLine label="Challenge">{monster.getFormattedChallenge()}</StatLine>
-      {monster.source && <StatLine label="Source">{monster.getFormattedSource()}</StatLine>}
       {monster.traits.length > 0 && (
         <div className="mb-3">
           <h3 className="text-[#8d2e1e] font-semibold">Traits</h3>

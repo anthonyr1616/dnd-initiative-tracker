@@ -1,4 +1,4 @@
-import { formatSource } from "../helpers/spellDataParser.js";
+import { formatMonsterSource as formatSource } from "../helpers/monsterDataParser.js";
 
 class MonsterSummary {
   constructor({ id, name, source = null, apiUrl = null }) {

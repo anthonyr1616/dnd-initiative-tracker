@@ -1,4 +1,4 @@
-import { formatMonsterSource, parseMonsterEntries, formatSize, formatAlignment, formatChallengeRating } from "../helpers/monsterDataParser.js";
+import { formatMonsterSource, parseMonsterEntries, parseSpellcasting, formatSize, formatAlignment, formatChallengeRating } from "../helpers/monsterDataParser.js";
 
 class MonsterDetails {
   constructor(monsterRecord = {}) {
@@ -23,6 +23,7 @@ class MonsterDetails {
       conditionImmune = [],
       languages = [],
       trait = [],
+      spellcasting = [],
       action = [],
       legendary = [],
       legendaryActions = 3,
@@ -71,10 +72,13 @@ class MonsterDetails {
     this.damageImmunities = immune;
     this.conditionImmunities = conditionImmune;
     this.languages = languages.join(", ");
-    this.traits = (trait || []).map((t) => ({
-      name: t.name,
-      description: parseMonsterEntries(t.entries || []),
-    }));
+    this.traits = [
+      ...(trait || []).map((t) => ({
+        name: t.name,
+        description: parseMonsterEntries(t.entries || []),
+      })),
+      ...parseSpellcasting(spellcasting),
+    ];
     this.actions = (action || []).map((a) => ({
       name: a.name,
       description: parseMonsterEntries(a.entries || []),

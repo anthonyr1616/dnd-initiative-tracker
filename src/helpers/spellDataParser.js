@@ -9,15 +9,7 @@ const SCHOOL_CODE_MAP = {
   T: "Transmutation",
 };
 
-const SOURCE_FORMAT_MAP = {
-  PHB: "PHB (2014)",
-  XPHB: "PHB (2024)",
-};
-
-export function formatSource(source = "") {
-  if (!source) return "";
-  return SOURCE_FORMAT_MAP[source] || source;
-}
+export { formatSource } from "./sourceMap.js";
 
 export function createSpellId(name, source = "unknown") {
   const slug = name

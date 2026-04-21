@@ -79,10 +79,7 @@ export function formatAlignment(alignment = []) {
   return deduped.join(" ");
 }
 
-const SOURCE_FORMAT_MAP = {
-  MM: "Monster Manual (2014)",
-  XMM: "Monster Manual (2024)",
-};
+import { formatSource } from "./sourceMap.js";
 
 const ABILITY_MAP = {
   str: "Strength",
@@ -96,8 +93,7 @@ const ABILITY_MAP = {
 const ORDINAL_MAP = { 1: "First", 2: "Second", 3: "Third" };
 
 export function formatMonsterSource(source = "") {
-  if (!source) return "";
-  return SOURCE_FORMAT_MAP[source] || source;
+  return formatSource(source);
 }
 
 export function parseMonsterTaggedText(text = "") {
@@ -218,4 +214,44 @@ export function parseMonsterEntries(entries = []) {
   const paragraphs = [];
   flattenMonsterEntry(entries, paragraphs);
   return paragraphs;
+}
+
+function parseSpellRefs(refs = []) {
+  return refs.map((r) => parseMonsterTaggedText(r)).join(", ");
+}
+
+export function parseSpellcasting(spellcastingArray = []) {
+  return spellcastingArray.map((entry) => {
+    const paragraphs = [];
+
+    if (entry.headerEntries) {
+      flattenMonsterEntry(entry.headerEntries, paragraphs);
+    }
+
+    if (entry.will?.length) {
+      paragraphs.push(`At will: ${parseSpellRefs(entry.will)}`);
+    }
+
+    if (entry.daily) {
+      for (const [key, spells] of Object.entries(entry.daily)) {
+        const count = key.replace("e", "");
+        const each = key.endsWith("e") || spells.length > 1 ? " each" : "";
+        paragraphs.push(`${count}/day${each}: ${parseSpellRefs(spells)}`);
+      }
+    }
+
+    if (entry.rest) {
+      for (const [key, spells] of Object.entries(entry.rest)) {
+        const count = key.replace("e", "");
+        const each = key.endsWith("e") || spells.length > 1 ? " each" : "";
+        paragraphs.push(`${count}/rest${each}: ${parseSpellRefs(spells)}`);
+      }
+    }
+
+    if (entry.footerEntries) {
+      flattenMonsterEntry(entry.footerEntries, paragraphs);
+    }
+
+    return { name: entry.name, description: paragraphs };
+  });
 }

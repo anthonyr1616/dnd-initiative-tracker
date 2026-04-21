@@ -4,9 +4,19 @@ import StatLine from "./StatLine";
 export default function SpellCard({ spell }) {
   return (
     <div className="rounded-lg border p-4 shadow-sm bg-[#faefd1] border-[#4a2800]">
-      <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
-        {spell.name}
-      </h2>
+      <div className="flex items-start justify-between">
+        <h2 className="text-2xl font-bold uppercase text-[#4a2800]">
+          {spell.name}
+        </h2>
+        {spell.source && (
+          <span
+            className="text-xs text-[#4a2800]/40 ml-2 mt-1 cursor-default shrink-0"
+            title={spell.getFormattedSource()}
+          >
+            {spell.source}
+          </span>
+        )}
+      </div>
       <p>
         <span className="italic text-md">
           {spell.level > 0 && `Level ${spell.level} `}
@@ -22,7 +32,6 @@ export default function SpellCard({ spell }) {
         {spell.material ? ` (${spell.material})` : ""}
       </StatLine>
       <StatLine label="Duration:">{spell.duration}</StatLine>
-      {spell.source && <StatLine label="Source:">{spell.getFormattedSource()}</StatLine>}
       {spell.description.map((paragraph, index) => (
         <ReactMarkdown key={`description-${index}`}>{paragraph}</ReactMarkdown>
       ))}
