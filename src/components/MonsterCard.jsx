@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { calculateModifier } from "../helpers/helperMethods";
 import StatLine from "./StatLine";
 
@@ -87,48 +86,48 @@ export default function MonsterCard({ monster }) {
       <StatLine label="Challenge">{monster.challengeRating}</StatLine>
       {monster.source && <StatLine label="Source">{monster.getFormattedSource()}</StatLine>}
       {monster.traits.length > 0 && (
-        <>
-          <hr className="border-2 border-[#8d2e1e] my-2" />
-          <h3 className="font-semibold">Traits</h3>
+        <div className="mb-3">
+          <h3 className="text-[#8d2e1e] font-semibold">Traits</h3>
+          <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.traits.map((trait, index) => (
             <div key={index}>
               <strong>{trait.name}.</strong> {trait.description}
             </div>
           ))}
-        </>
+        </div>
       )}
       {monster.actions.length > 0 && (
-        <>
-          <hr className="border-2 border-[#8d2e1e] my-2" />
-          <h3 className="font-semibold">Actions</h3>
+        <div className="mb-3">
+          <h3 className="text-[#8d2e1e] font-semibold">Actions</h3>
+          <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.actions.map((action, index) => (
             <div key={index}>
               <strong>{action.name}.</strong> {action.description}
             </div>
           ))}
-        </>
+        </div>
       )}
       {monster.legendaryActions.length > 0 && (
-        <>
-          <hr className="border-2 border-[#8d2e1e] my-2" />
-          <h3 className="font-semibold">Legendary Actions</h3>
+        <div className="mb-3">
+          <h3 className="text-[#8d2e1e] font-semibold">Legendary Actions</h3>
+          <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.legendaryActions.map((action, index) => (
             <div key={index}>
               <strong>{action.name}.</strong> {action.description}
             </div>
           ))}
-        </>
+        </div>
       )}
       {monster.reactions.length > 0 && (
-        <>
-          <hr className="border-2 border-[#8d2e1e] my-2" />
-          <h3 className="font-semibold">Reactions</h3>
+        <div className="mb-3">
+          <h3 className="text-[#8d2e1e] font-semibold">Reactions</h3>
+          <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.reactions.map((reaction, index) => (
             <div key={index}>
               <strong>{reaction.name}.</strong> {reaction.description}
             </div>
           ))}
-        </>
+        </div>
       )}
     </div>
   );
