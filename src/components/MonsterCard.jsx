@@ -120,14 +120,20 @@ export default function MonsterCard({ monster }) {
         ))}
       </ul>
       <hr className="border-2 border-[#8d2e1e] my-2" />
+      {monster.skills.length > 0 && (
+        <StatLine label="Skills">{monster.skills.join(", ")}</StatLine>
+      )}
       {monster.damageImmunities.length > 0 && (
         <StatLine label="Damage Immunities">{monster.damageImmunities.join(", ")}</StatLine>
       )}
       {monster.conditionImmunities.length > 0 && (
         <StatLine label="Condition Immunities">{monster.conditionImmunities.join(", ")}</StatLine>
       )}
+      {monster.gear.length > 0 && (
+        <StatLine label="Gear">{monster.gear.join(", ")}</StatLine>
+      )}
       <StatLine label="Senses">{monster.senses.join(", ")}</StatLine>
-      <StatLine label="Languages">{monster.languages}</StatLine>
+      <StatLine label="Languages">{monster.languages || "None"}</StatLine>
       <StatLine label="Challenge">{monster.getFormattedChallenge()}</StatLine>
       {monster.traits.length > 0 && (
         <div className="mb-3">

@@ -17,6 +17,8 @@ class MonsterDetails {
       int,
       wis,
       cha,
+      skill = {},
+      gear = [],
       senses = [],
       passive,
       immune = [],
@@ -36,7 +38,7 @@ class MonsterDetails {
     this.id = monsterRecord.id || createMonsterId(name, source);
     this.name = name;
     this.source = source;
-    this.size = formatSize(Array.isArray(size) ? size[0] : size);
+    this.size = (Array.isArray(size) ? size : [size]).map(formatSize).join(" or ");
     this.type = typeof type === "object" ? type.type : type;
     this.alignment = formatAlignment(alignment);
     this.armorClass = ac.map((acItem) => {
@@ -67,8 +69,21 @@ class MonsterDetails {
       wisdom: wis,
       charisma: cha,
     };
-    this.senses = senses;
-    this.passivePerception = passive;
+    this.skills = Object.entries(skill).map(([name, bonus]) => {
+      const formatted = String(bonus).startsWith("+") || String(bonus).startsWith("-") ? bonus : `+${bonus}`;
+      return `${name.charAt(0).toUpperCase() + name.slice(1)} ${formatted}`;
+    });
+    this.gear = gear.map((item) => {
+      const rawName = typeof item === "string" ? item : (item.item || item.name || "");
+      const name = rawName.split("|")[0];
+      const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+      const quantity = typeof item === "object" ? item.quantity : null;
+      if (quantity && quantity > 1) return `${capitalized}s (${quantity})`;
+      return capitalized;
+    });
+    this.senses = passive != null
+      ? [...senses, `Passive Perception ${passive}`]
+      : senses;
     this.damageImmunities = immune;
     this.conditionImmunities = conditionImmune;
     this.languages = languages.join(", ");
