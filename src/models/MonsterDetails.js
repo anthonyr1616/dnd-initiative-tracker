@@ -1,4 +1,4 @@
-import { formatMonsterSource, parseMonsterEntries, formatSize, formatAlignment } from "../helpers/monsterDataParser.js";
+import { formatMonsterSource, parseMonsterEntries, formatSize, formatAlignment, formatChallengeRating } from "../helpers/monsterDataParser.js";
 
 class MonsterDetails {
   constructor(monsterRecord = {}) {
@@ -91,6 +91,7 @@ class MonsterDetails {
     }));
     this.challengeRating = typeof cr === "object" ? cr.cr : cr;
     this.xp = xp;
+    this.xpLair = typeof cr === "object" ? cr.xpLair ?? null : null;
   }
 
   toString() {
@@ -99,6 +100,10 @@ class MonsterDetails {
 
   getFormattedSource() {
     return formatMonsterSource(this.source);
+  }
+
+  getFormattedChallenge() {
+    return formatChallengeRating(this.challengeRating, this.xp, this.xpLair);
   }
 }
 

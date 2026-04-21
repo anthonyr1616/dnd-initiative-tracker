@@ -107,7 +107,7 @@ export default function MonsterCard({ monster }) {
       )}
       <StatLine label="Senses">{monster.senses.join(", ")}</StatLine>
       <StatLine label="Languages">{monster.languages}</StatLine>
-      <StatLine label="Challenge">{monster.challengeRating}</StatLine>
+      <StatLine label="Challenge">{monster.getFormattedChallenge()}</StatLine>
       {monster.source && <StatLine label="Source">{monster.getFormattedSource()}</StatLine>}
       {monster.traits.length > 0 && (
         <div className="mb-3">

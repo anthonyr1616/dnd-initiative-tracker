@@ -19,6 +19,54 @@ const ALIGNMENT_MAP = {
   U: "Unaligned",
 };
 
+const CR_XP_MAP = {
+  "0": 10, "1/8": 25, "1/4": 50, "1/2": 100,
+  "1": 200, "2": 450, "3": 700, "4": 1100,
+  "5": 1800, "6": 2300, "7": 2900, "8": 3900,
+  "9": 5000, "10": 5900, "11": 7200, "12": 8400,
+  "13": 10000, "14": 11500, "15": 13000, "16": 15000,
+  "17": 18000, "18": 20000, "19": 22000, "20": 25000,
+  "21": 33000, "22": 41000, "23": 50000, "24": 62000,
+  "25": 75000, "26": 90000, "27": 105000, "28": 120000,
+  "29": 135000, "30": 155000,
+};
+
+function crToNumber(cr = "") {
+  if (cr === "1/8") return 0.125;
+  if (cr === "1/4") return 0.25;
+  if (cr === "1/2") return 0.5;
+  return Number(cr) || 0;
+}
+
+function crToPb(cr = "") {
+  const n = crToNumber(cr);
+  if (n <= 4) return 2;
+  if (n <= 8) return 3;
+  if (n <= 12) return 4;
+  if (n <= 16) return 5;
+  if (n <= 20) return 6;
+  if (n <= 24) return 7;
+  if (n <= 28) return 8;
+  return 9;
+}
+
+export function formatChallengeRating(cr, xp, xpLair) {
+  if (!cr && cr !== "0") return "";
+  const crStr = String(cr);
+  const baseXp = xp ?? CR_XP_MAP[crStr];
+  const pb = crToPb(crStr);
+  const fmt = (n) => n?.toLocaleString();
+
+  const xpPart = baseXp != null
+    ? xpLair != null
+      ? `XP ${fmt(baseXp)}, or ${fmt(xpLair)} in lair`
+      : `XP ${fmt(baseXp)}`
+    : null;
+
+  const parts = [xpPart, `PB +${pb}`].filter(Boolean);
+  return parts.length ? `${crStr} (${parts.join("; ")})` : crStr;
+}
+
 export function formatSize(size = "") {
   return SIZE_MAP[size] || size;
 }
