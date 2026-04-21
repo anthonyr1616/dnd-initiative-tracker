@@ -39,7 +39,7 @@ export function parseTaggedText(text = "") {
   });
 }
 
-function flattenEntry(entry, output) {
+export function flattenEntry(entry, output) {
   if (!entry) {
     return;
   }

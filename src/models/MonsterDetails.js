@@ -1,4 +1,4 @@
-import { formatSource, parseTaggedText, parseSpellEntries } from "../helpers/spellDataParser.js";
+import { formatMonsterSource, parseMonsterEntries, formatSize, formatAlignment } from "../helpers/monsterDataParser.js";
 
 class MonsterDetails {
   constructor(monsterRecord = {}) {
@@ -25,6 +25,8 @@ class MonsterDetails {
       trait = [],
       action = [],
       legendary = [],
+      legendaryActions = 3,
+      legendaryActionsLair,
       reaction = [],
       cr,
       xp,
@@ -33,9 +35,9 @@ class MonsterDetails {
     this.id = monsterRecord.id || createMonsterId(name, source);
     this.name = name;
     this.source = source;
-    this.size = Array.isArray(size) ? size[0] : size; // e.g., "M"
-    this.type = typeof type === "object" ? type.type : type; // Handle both string and object types
-    this.alignment = alignment.join(", ");
+    this.size = formatSize(Array.isArray(size) ? size[0] : size);
+    this.type = typeof type === "object" ? type.type : type;
+    this.alignment = formatAlignment(alignment);
     this.armorClass = ac.map((acItem) => {
       if (typeof acItem === "number") {
         return { value: acItem };
@@ -71,21 +73,23 @@ class MonsterDetails {
     this.languages = languages.join(", ");
     this.traits = (trait || []).map((t) => ({
       name: t.name,
-      description: parseSpellEntries(t.entries || []).join(" "),
+      description: parseMonsterEntries(t.entries || []),
     }));
     this.actions = (action || []).map((a) => ({
       name: a.name,
-      description: parseSpellEntries(a.entries || []).join(" "),
+      description: parseMonsterEntries(a.entries || []),
     }));
     this.legendaryActions = (legendary || []).map((l) => ({
       name: l.name,
-      description: parseSpellEntries(l.entries || []).join(" "),
+      description: parseMonsterEntries(l.entries || []),
     }));
+    this.legendaryActionsCount = legendaryActions;
+    this.legendaryActionsLair = legendaryActionsLair ?? null;
     this.reactions = (reaction || []).map((r) => ({
       name: r.name,
-      description: parseSpellEntries(r.entries || []).join(" "),
+      description: parseMonsterEntries(r.entries || []),
     }));
-    this.challengeRating = cr;
+    this.challengeRating = typeof cr === "object" ? cr.cr : cr;
     this.xp = xp;
   }
 
@@ -94,7 +98,7 @@ class MonsterDetails {
   }
 
   getFormattedSource() {
-    return formatSource(this.source);
+    return formatMonsterSource(this.source);
   }
 }
 

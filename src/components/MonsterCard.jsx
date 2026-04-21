@@ -1,6 +1,30 @@
 import { calculateModifier } from "../helpers/helperMethods";
 import StatLine from "./StatLine";
 
+function renderPara(para, i) {
+  if (para && typeof para === "object" && para.itemName) {
+    return (
+      <p key={i} className="ml-2">
+        <strong>{para.itemName}.</strong> {para.text}
+      </p>
+    );
+  }
+  return <p key={i} className="ml-2">{para}</p>;
+}
+
+function EntryBlock({ name, description }) {
+  const [first, ...rest] = Array.isArray(description) ? description : [description];
+  return (
+    <div className="mb-1">
+      <strong>{name}.</strong>{" "}
+      {first && typeof first === "object" && first.itemName
+        ? <><strong>{first.itemName}.</strong> {first.text}</>
+        : first}
+      {rest.map((para, i) => renderPara(para, i))}
+    </div>
+  );
+}
+
 export default function MonsterCard({ monster }) {
   const armorClassStrings = monster.armorClass.map((ac) => {
     const value = ac.value ?? ac.ac ?? ac;
@@ -90,9 +114,7 @@ export default function MonsterCard({ monster }) {
           <h3 className="text-[#8d2e1e] font-semibold">Traits</h3>
           <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.traits.map((trait, index) => (
-            <div key={index}>
-              <strong>{trait.name}.</strong> {trait.description}
-            </div>
+            <EntryBlock key={index} name={trait.name} description={trait.description} />
           ))}
         </div>
       )}
@@ -101,9 +123,7 @@ export default function MonsterCard({ monster }) {
           <h3 className="text-[#8d2e1e] font-semibold">Actions</h3>
           <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.actions.map((action, index) => (
-            <div key={index}>
-              <strong>{action.name}.</strong> {action.description}
-            </div>
+            <EntryBlock key={index} name={action.name} description={action.description} />
           ))}
         </div>
       )}
@@ -111,10 +131,13 @@ export default function MonsterCard({ monster }) {
         <div className="mb-3">
           <h3 className="text-[#8d2e1e] font-semibold">Legendary Actions</h3>
           <hr className="border-1 border-[#8d2e1e] mb-1" />
+          <p className="mb-1">
+            <strong>Legendary Action Uses:</strong>{" "}
+            {monster.legendaryActionsCount}
+            {monster.legendaryActionsLair != null && ` (${monster.legendaryActionsLair} in Lair)`}.
+          </p>
           {monster.legendaryActions.map((action, index) => (
-            <div key={index}>
-              <strong>{action.name}.</strong> {action.description}
-            </div>
+            <EntryBlock key={index} name={action.name} description={action.description} />
           ))}
         </div>
       )}
@@ -123,9 +146,7 @@ export default function MonsterCard({ monster }) {
           <h3 className="text-[#8d2e1e] font-semibold">Reactions</h3>
           <hr className="border-1 border-[#8d2e1e] mb-1" />
           {monster.reactions.map((reaction, index) => (
-            <div key={index}>
-              <strong>{reaction.name}.</strong> {reaction.description}
-            </div>
+            <EntryBlock key={index} name={reaction.name} description={reaction.description} />
           ))}
         </div>
       )}
