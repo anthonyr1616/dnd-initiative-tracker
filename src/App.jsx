@@ -202,7 +202,8 @@ function App() {
               Live
             </span>
             <code className={`text-xs ${styles.sessionUrl}`}>
-              /room/{sessionId}
+              {window.location.origin}
+              {import.meta.env.BASE_URL}#/room/{sessionId}
             </code>
             <button
               onClick={handleCopyUrl}
