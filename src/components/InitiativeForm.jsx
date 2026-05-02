@@ -3,6 +3,10 @@ import styles from "./InitiativeForm.module.css";
 import { getAllMonsters, getMonster } from "../services/monsterApi";
 import CustomComboBox from "./CustomComboBox";
 import { rollDice, rollHitDice, calculateModifier } from "../helpers/helperMethods";
+import {
+  Dices,
+  Plus,
+} from "lucide-react";
 
 function InitiativeForm({
   onAdd,
@@ -169,7 +173,7 @@ function InitiativeForm({
                 className={`rounded-md border px-3 py-2 text-sm font-bold leading-none ${styles.menuBtn}`}
                 aria-label="Fill from source"
               >
-                +
+                <Plus className="w-4 h-4" />
               </button>
               {showMenu && (
                 <div className={`absolute right-0 mt-1 z-20 min-w-max rounded-md shadow-lg ${styles.dropdown}`}>
@@ -215,7 +219,7 @@ function InitiativeForm({
                     className={styles.rerollBtn}
                     aria-label="Reroll hit points"
                   >
-                    <img src="/dice.svg" alt="" className={styles.rerollIcon} />
+                    <Dices className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -290,7 +294,7 @@ function InitiativeForm({
                 className={styles.rerollBtn}
                 aria-label="Reroll initiative"
               >
-                <img src="/dice.svg" alt="" className={styles.rerollIcon} />
+                <Dices className="w-4 h-4" />
               </button>
             </div>
           </div>

@@ -7,6 +7,8 @@ import {
   Zap,
   ChevronUp,
   ChevronDown,
+  HeartPlus,
+  Sword,
 } from "lucide-react";
 import styles from "./InitiativeItem.module.css";
 import HpBar from "./HpBar";
@@ -186,23 +188,26 @@ function InitiativeItem({
         />
         <button
           onClick={handleDamage}
-          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.damageBtn}`}
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer  flex items-center gap-1  ${styles.damageBtn}`}
           title="Apply damage (temp HP absorbs first)"
         >
+          <Sword className="w-4 h-4" />
           Damage
         </button>
         <button
           onClick={handleHeal}
-          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.healBtn}`}
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer flex items-center gap-1 ${styles.healBtn}`}
         >
+          <Heart className="w-4 h-4" />
           Heal
         </button>
         <button
           onClick={handleSetTempHp}
-          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer ${styles.tempHpBtn}`}
+          className={`px-3 py-1 text-sm rounded font-medium cursor-pointer flex items-center gap-1 ${styles.tempHpBtn}`}
           title="Set temp HP (uses highest value per D&D rules)"
         >
-          +Temp HP
+          <HeartPlus className="w-4 h-4" />
+          Temp HP
         </button>
       </div>
     </div>
