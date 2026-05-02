@@ -1,0 +1,41 @@
+.track {
+  background: var(--color-hp-bar-track);
+}
+
+.bar[data-status="healthy"] {
+  background: var(--color-hp-bar-healthy);
+}
+.bar[data-status="good"] {
+  background: var(--color-hp-bar-good);
+}
+.bar[data-status="warn"] {
+  background: var(--color-hp-bar-warn);
+}
+.bar[data-status="low"] {
+  background: var(--color-hp-bar-low);
+}
+.bar[data-status="none"] {
+  background: var(--color-hp-bar-none);
+}
+.bar[data-status="dead"] {
+  background: var(--color-hp-bar-dead);
+}
+
+.label[data-status="healthy"] {
+  color: var(--color-hp-text-healthy);
+}
+.label[data-status="good"] {
+  color: var(--color-hp-text-good);
+}
+.label[data-status="warn"] {
+  color: var(--color-hp-text-warn);
+}
+.label[data-status="low"] {
+  color: var(--color-hp-text-low);
+}
+.label[data-status="none"] {
+  color: var(--color-hp-text-none);
+}
+.label[data-status="dead"] {
+  color: var(--color-hp-text-dead);
+}

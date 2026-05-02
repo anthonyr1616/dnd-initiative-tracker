@@ -2,7 +2,12 @@ import "./App.css";
 import styles from "./App.module.css";
 import InitiativeForm from "./components/InitiativeForm";
 import InitiativeList from "./components/InitiativeList";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import {
+  createSession,
+  updateSession,
+  deleteSession,
+} from "./services/sessionService";
 
 const STORAGE_KEY = "dnd-initiative-tracker";
 
@@ -27,6 +32,10 @@ function App() {
     saved?.currentTurnId ?? null,
   );
   const [round, setRound] = useState(saved?.round ?? 1);
+  const [sessionId, setSessionId] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const syncTimeoutRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem(
@@ -34,6 +43,47 @@ function App() {
       JSON.stringify({ initiativeItems, currentTurnId, round }),
     );
   }, [initiativeItems, currentTurnId, round]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    clearTimeout(syncTimeoutRef.current);
+    syncTimeoutRef.current = setTimeout(() => {
+      updateSession(sessionId, {
+        items: initiativeItems,
+        currentTurnId,
+        round,
+      });
+    }, 500);
+    return () => clearTimeout(syncTimeoutRef.current);
+  }, [initiativeItems, currentTurnId, round, sessionId]);
+
+  const handleStartSharing = async () => {
+    setIsCreatingSession(true);
+    try {
+      const id = await createSession({
+        items: initiativeItems,
+        currentTurnId,
+        round,
+      });
+      setSessionId(id);
+    } finally {
+      setIsCreatingSession(false);
+    }
+  };
+
+  const handleStopSharing = () => {
+    deleteSession(sessionId);
+    setSessionId(null);
+    setCopied(false);
+  };
+
+  const handleCopyUrl = () => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/room/${sessionId}`,
+    );
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const getCurrentIndex = (items, turnId) => {
     if (turnId === null) return 0;
@@ -143,8 +193,45 @@ function App() {
 
   return (
     <div className="flex flex-col max-w-7xl mx-auto p-4 gap-4">
+      <div className="flex justify-end">
+        {sessionId ? (
+          <div
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 ${styles.sessionActive}`}
+          >
+            <span className={`text-xs font-semibold ${styles.sessionLabel}`}>
+              Live
+            </span>
+            <code className={`text-xs ${styles.sessionUrl}`}>
+              {window.location.origin}/room/{sessionId}
+            </code>
+            <button
+              onClick={handleCopyUrl}
+              className={`text-xs px-2 py-1 rounded ${styles.copyBtn}`}
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+            <button
+              onClick={handleStopSharing}
+              className={`text-xs px-2 py-1 rounded ${styles.stopBtn}`}
+            >
+              Stop
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleStartSharing}
+            disabled={isCreatingSession}
+            className={`text-sm px-3 py-1.5 rounded-md font-medium ${styles.shareBtn}`}
+          >
+            {isCreatingSession ? "Creating…" : "Share Session"}
+          </button>
+        )}
+      </div>
+
       {initiativeItems.length > 0 && (
-        <div className={`flex items-center justify-between rounded-xl px-4 py-3 ${styles.turnTracker}`}>
+        <div
+          className={`flex items-center justify-between rounded-xl px-4 py-3 ${styles.turnTracker}`}
+        >
           <div className="flex items-center gap-3">
             <span className={`text-lg font-bold ${styles.roundText}`}>
               Round {round}

@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { Trash2, Edit, Heart, Shield, Zap, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Trash2,
+  Edit,
+  Heart,
+  Shield,
+  Zap,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import styles from "./InitiativeItem.module.css";
-
-function hpStatus(current, max) {
-  if (max === 0) return "none";
-  const pct = current / max;
-  if (pct >= 0.75) return "healthy";
-  if (pct >= 0.5) return "good";
-  if (pct >= 0.25) return "warn";
-  if (pct > 0) return "low";
-  return "dead";
-}
+import HpBar from "./HpBar";
+import { getHpStatus } from "../helpers/helperMethods";
 
 function InitiativeItem({
   id,
@@ -71,8 +71,7 @@ function InitiativeItem({
     if (e.key === "Enter") handleDamage();
   };
 
-  const hpPct = maxHp > 0 ? Math.max(0, Math.min(1, currentHp / maxHp)) : 0;
-  const status = hpStatus(currentHp, maxHp);
+  const { key: status } = getHpStatus(currentHp, maxHp);
 
   return (
     <div
@@ -105,7 +104,9 @@ function InitiativeItem({
           )}
         </div>
 
-        <p className={`text-2xl font-bold flex-1 truncate ${styles.name} ${isCurrentTurn ? styles.nameActive : ""}`}>
+        <p
+          className={`text-2xl font-bold flex-1 truncate ${styles.name} ${isCurrentTurn ? styles.nameActive : ""}`}
+        >
           {name}
         </p>
 
@@ -115,10 +116,15 @@ function InitiativeItem({
             title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}
           >
             <Heart className={`w-5 h-5 ${styles.heartIcon}`} strokeWidth={1} />
-            <span className={`text-xl font-semibold ${styles.hpValue}`} data-status={status}>
+            <span
+              className={`text-xl font-semibold ${styles.hpValue}`}
+              data-status={status}
+            >
               {currentHp}
               {temporaryHp > 0 && (
-                <span className={`text-base ${styles.tempBonus}`}>+{temporaryHp}</span>
+                <span className={`text-base ${styles.tempBonus}`}>
+                  +{temporaryHp}
+                </span>
               )}
             </span>
             <span className={`text-base ${styles.hpMax}`}>/{maxHp}</span>
@@ -128,7 +134,10 @@ function InitiativeItem({
             className="flex items-center gap-1"
             title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}
           >
-            <Shield className={`w-5 h-5 ${styles.shieldIcon}`} strokeWidth={1} />
+            <Shield
+              className={`w-5 h-5 ${styles.shieldIcon}`}
+              strokeWidth={1}
+            />
             <span className="text-xl font-semibold">{ac + bonusAc}</span>
             {bonusAc > 0 && (
               <span className={`text-sm ${styles.bonusAc}`}>+{bonusAc}</span>
@@ -160,12 +169,8 @@ function InitiativeItem({
       </div>
 
       {/* HP bar */}
-      <div className={`mt-2 h-2 rounded-full overflow-hidden ${styles.hpTrack}`}>
-        <div
-          className={`h-full rounded-full transition-all duration-300 ${styles.hpBar}`}
-          data-status={status}
-          style={{ width: `${hpPct * 100}%` }}
-        />
+      <div className="mt-2">
+        <HpBar currentHp={currentHp} maxHp={maxHp} />
       </div>
 
       {/* Action row */}

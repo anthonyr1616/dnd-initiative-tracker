@@ -3,11 +3,12 @@ import App from "./App";
 import MonsterInfoPage from "./pages/MonsterInfoPage";
 import SpellInfoPage from "./pages/SpellInfoPage";
 import ErrorPage from "./pages/ErrorPage";
+import ViewerPage from "./pages/ViewerPage";
 
 const routes = [
   {
     path: "/",
-    element: <Layout />, // layout wraps all routes
+    element: <Layout />, // layout wraps all child routes
     errorElement: <ErrorPage />,
     children: [
       {
@@ -23,6 +24,11 @@ const routes = [
         element: <SpellInfoPage />,
       },
     ],
+  },
+  {
+    path: "/room/:id",
+    element: <ViewerPage />,
+    errorElement: <ErrorPage />,
   },
 ];
 

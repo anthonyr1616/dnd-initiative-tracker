@@ -46,3 +46,49 @@
 .clearBtn:hover {
   background: var(--color-btn-danger-hover);
 }
+
+.shareBtn {
+  background: var(--color-btn-save-bg);
+  color: #ffffff;
+}
+.shareBtn:hover {
+  background: var(--color-btn-save-hover);
+}
+.shareBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sessionActive {
+  background: var(--color-surface);
+  border: 1px solid var(--color-btn-save-bg);
+  box-shadow: 0 0 0 1px var(--color-btn-save-bg);
+}
+
+.sessionLabel {
+  color: var(--color-btn-save-bg);
+}
+
+.sessionUrl {
+  color: var(--color-text-primary);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyBtn {
+  background: var(--color-btn-nav-bg);
+  color: var(--color-btn-nav-text);
+}
+.copyBtn:hover {
+  background: var(--color-btn-nav-hover);
+}
+
+.stopBtn {
+  background: var(--color-btn-danger-bg);
+  color: var(--color-btn-danger-text);
+}
+.stopBtn:hover {
+  background: var(--color-btn-danger-hover);
+}

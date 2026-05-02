@@ -50,4 +50,22 @@ const rollHitDice = (formula) => {
   return Math.max(1, total);
 };
 
-export { decimalToFraction, makeUrl, formatKeyValueArray, calculateModifier, rollDice, rollHitDice };
+function getHpStatus(current, max) {
+  if (!max) return { key: "none", label: "—", pct: 0 };
+  const pct = Math.max(0, current) / max;
+  if (pct <= 0) return { key: "dead", label: "Defeated", pct: 0 };
+  if (pct <= 0.25) return { key: "low", label: "Critically Wounded", pct };
+  if (pct <= 0.5) return { key: "warn", label: "Bloodied", pct };
+  if (pct <= 0.75) return { key: "good", label: "Minor Injuries", pct };
+  return { key: "healthy", label: "Healthy", pct };
+}
+
+export {
+  decimalToFraction,
+  makeUrl,
+  formatKeyValueArray,
+  calculateModifier,
+  rollDice,
+  rollHitDice,
+  getHpStatus,
+};
