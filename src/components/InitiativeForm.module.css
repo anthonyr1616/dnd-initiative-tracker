@@ -60,3 +60,85 @@
   outline: none;
   box-shadow: 0 0 0 2px var(--color-btn-add-bg);
 }
+
+.menuBtn {
+  border-color: var(--color-btn-cancel-border);
+  color: var(--color-btn-cancel-text);
+  background: transparent;
+}
+.menuBtn:hover {
+  background: var(--color-btn-cancel-hover);
+}
+.menuBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring-muted);
+}
+
+.dropdown {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.dropdownItem {
+  color: var(--color-input-text);
+}
+.dropdownItem:hover {
+  background: var(--color-btn-cancel-hover);
+}
+
+.modal {
+  background: var(--color-surface);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.modalTitle {
+  color: var(--color-input-text);
+}
+
+.closeBtn {
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.closeBtn:hover {
+  background: var(--color-btn-cancel-hover);
+}
+
+.loadingText {
+  color: var(--color-text-muted);
+}
+
+.rerollBtn {
+  flex-shrink: 0;
+  border: 1px solid var(--color-btn-cancel-border);
+  color: var(--color-btn-cancel-text);
+  background: transparent;
+  border-radius: 6px;
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rerollBtn:hover {
+  background: var(--color-btn-cancel-hover);
+}
+.rerollBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring-muted);
+}
+.rerollBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.rerollIcon {
+  width: 1rem;
+  height: 1rem;
+}

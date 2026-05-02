@@ -36,4 +36,18 @@ const formatKeyValueArray = (obj, capitalize = true) =>
 
 const calculateModifier = (score) => Math.floor((score - 10) / 2);
 
-export { decimalToFraction, makeUrl, formatKeyValueArray, calculateModifier };
+const rollDice = (sides) => Math.floor(Math.random() * sides) + 1;
+
+const rollHitDice = (formula) => {
+  if (!formula) return null;
+  const match = formula.match(/(\d+)d(\d+)\s*([+-]\s*\d+)?/i);
+  if (!match) return null;
+  const count = parseInt(match[1]);
+  const sides = parseInt(match[2]);
+  let total = 0;
+  for (let i = 0; i < count; i++) total += rollDice(sides);
+  if (match[3]) total += parseInt(match[3].replace(/\s+/g, ""));
+  return Math.max(1, total);
+};
+
+export { decimalToFraction, makeUrl, formatKeyValueArray, calculateModifier, rollDice, rollHitDice };
