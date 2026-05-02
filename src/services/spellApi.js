@@ -2,8 +2,8 @@ import { SpellSummary } from "../models/SpellSummary.js";
 import { SpellDetails } from "../models/SpellDetails.js";
 import { createSpellId } from "../helpers/spellDataParser.js";
 
-const SPELL_INDEX_URL = "/5etools/data/spells/index.json";
-const SPELL_BASE_PATH = "/5etools/data/spells/";
+const SPELL_INDEX_URL = `${import.meta.env.BASE_URL}5etools/data/spells/index.json`;
+const SPELL_BASE_PATH = `${import.meta.env.BASE_URL}5etools/data/spells/`;
 
 const cache = {
   index: null,

@@ -79,7 +79,7 @@ function App() {
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/room/${sessionId}`,
+      `${window.location.origin}${import.meta.env.BASE_URL}#/room/${sessionId}`,
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -202,7 +202,7 @@ function App() {
               Live
             </span>
             <code className={`text-xs ${styles.sessionUrl}`}>
-              {window.location.origin}/room/{sessionId}
+              /room/{sessionId}
             </code>
             <button
               onClick={handleCopyUrl}

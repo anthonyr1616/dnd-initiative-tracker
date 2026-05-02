@@ -1,5 +1,5 @@
-const BESTIARY_INDEX_URL = "/5etools/data/bestiary/index.json";
-const BESTIARY_BASE_PATH = "/5etools/data/bestiary/";
+const BESTIARY_INDEX_URL = `${import.meta.env.BASE_URL}5etools/data/bestiary/index.json`;
+const BESTIARY_BASE_PATH = `${import.meta.env.BASE_URL}5etools/data/bestiary/`;
 
 const cache = {
   index: null,
