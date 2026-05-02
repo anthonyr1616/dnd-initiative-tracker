@@ -32,6 +32,9 @@ function App() {
     saved?.currentTurnId ?? null,
   );
   const [round, setRound] = useState(saved?.round ?? 1);
+  const [combatStarted, setCombatStarted] = useState(
+    saved?.combatStarted ?? false,
+  );
   const [sessionId, setSessionId] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
@@ -40,9 +43,9 @@ function App() {
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ initiativeItems, currentTurnId, round }),
+      JSON.stringify({ initiativeItems, currentTurnId, round, combatStarted }),
     );
-  }, [initiativeItems, currentTurnId, round]);
+  }, [initiativeItems, currentTurnId, round, combatStarted]);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -116,7 +119,9 @@ function App() {
     setInitiativeItems(next);
     if (next.length === 0) {
       setCurrentTurnId(null);
-    } else if (id === currentTurnId) {
+      setCombatStarted(false);
+      setRound(1);
+    } else if (combatStarted && id === currentTurnId) {
       const oldIdx = initiativeItems.findIndex((i) => i.id === id);
       const newIdx = Math.min(oldIdx, next.length - 1);
       setCurrentTurnId(next[newIdx].id);
@@ -155,6 +160,12 @@ function App() {
     });
   };
 
+  const handleStartCombat = () => {
+    if (initiativeItems.length === 0) return;
+    setCombatStarted(true);
+    setCurrentTurnId(initiativeItems[0].id);
+  };
+
   const handleNextTurn = () => {
     if (initiativeItems.length === 0) return;
     const idx = getCurrentIndex(initiativeItems, currentTurnId);
@@ -179,6 +190,7 @@ function App() {
   };
 
   const handleResetCombat = () => {
+    setCombatStarted(false);
     setCurrentTurnId(null);
     setRound(1);
   };
@@ -187,6 +199,7 @@ function App() {
     setInitiativeItems([]);
     setCurrentTurnId(null);
     setRound(1);
+    setCombatStarted(false);
     setIsEditing(false);
     setEditingItem(null);
   };
@@ -233,51 +246,76 @@ function App() {
         <div
           className={`flex items-center justify-between rounded-xl px-4 py-3 ${styles.turnTracker}`}
         >
-          <div className="flex items-center gap-3">
-            <span className={`text-lg font-bold ${styles.roundText}`}>
-              Round {round}
-            </span>
-            <span className={styles.divider}>|</span>
-            <span className={`font-medium ${styles.turnName}`}>
-              {
-                initiativeItems[getCurrentIndex(initiativeItems, currentTurnId)]
-                  ?.name
-              }
-              &apos;s turn
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handlePrevTurn}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.navBtn}`}
-            >
-              ← Prev
-            </button>
-            <button
-              onClick={handleNextTurn}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
-            >
-              Next →
-            </button>
-            <button
-              onClick={handleResetCombat}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.resetBtn}`}
-            >
-              Reset
-            </button>
-            <button
-              onClick={handleClearAll}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
-            >
-              Clear All
-            </button>
-          </div>
+          {combatStarted ? (
+            <>
+              <div className="flex items-center gap-3">
+                <span className={`text-lg font-bold ${styles.roundText}`}>
+                  Round {round}
+                </span>
+                <span className={styles.divider}>|</span>
+                <span className={`font-medium ${styles.turnName}`}>
+                  {
+                    initiativeItems[
+                      getCurrentIndex(initiativeItems, currentTurnId)
+                    ]?.name
+                  }
+                  &apos;s turn
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handlePrevTurn}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.navBtn}`}
+                >
+                  ← Prev
+                </button>
+                <button
+                  onClick={handleNextTurn}
+                  className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
+                >
+                  Next →
+                </button>
+                <button
+                  onClick={handleResetCombat}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.resetBtn}`}
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={handleClearAll}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
+                >
+                  Clear All
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className={`text-lg font-bold ${styles.roundText}`}>
+                Combat not started
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleStartCombat}
+                  className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
+                >
+                  Start Combat
+                </button>
+                <button
+                  onClick={handleClearAll}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
+                >
+                  Clear All
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
       <InitiativeList
         initiativeItems={initiativeItems}
-        currentTurnId={currentTurnId}
+        currentTurnId={combatStarted ? currentTurnId : null}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onUpdate={handleUpdate}
