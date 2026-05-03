@@ -65,6 +65,7 @@
   border-color: var(--color-btn-cancel-border);
   color: var(--color-btn-cancel-text);
   background: transparent;
+  cursor: pointer;
 }
 .menuBtn:hover {
   background: var(--color-btn-cancel-hover);
@@ -81,6 +82,7 @@
 
 .dropdownItem {
   color: var(--color-input-text);
+  cursor: pointer;
 }
 .dropdownItem:hover {
   background: var(--color-btn-cancel-hover);

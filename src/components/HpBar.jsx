@@ -17,7 +17,7 @@ function HpBar({ currentHp, maxHp, showLabel = false }) {
       {showLabel && (
         <span
           className={`text-xs font-medium shrink-0 text-right ${styles.label}`}
-          style={{ minWidth: "8.5rem" }}
+          style={{ minWidth: "6.5rem" }}
           data-status={key}
         >
           {label}
