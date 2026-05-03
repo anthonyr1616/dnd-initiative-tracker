@@ -4,31 +4,6 @@ import { subscribeToSession } from "../services/sessionService";
 import HpBar from "../components/HpBar";
 import { getHpStatus } from "../helpers/helperMethods";
 
-function PrivateHpBar() {
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        style={{
-          flex: 1,
-          height: "8px",
-          borderRadius: "9999px",
-          overflow: "hidden",
-          background: "var(--color-hp-bar-track)",
-        }}
-      >
-        <div
-          style={{
-            height: "100%",
-            width: "100%",
-            borderRadius: "9999px",
-            background:
-              "repeating-linear-gradient(45deg, var(--color-text-faint) 0px, var(--color-text-faint) 4px, transparent 4px, transparent 8px)",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
 
 function ViewerPage() {
   const { id } = useParams();
@@ -191,26 +166,13 @@ function ViewerPage() {
                   </div>
                 </div>
 
-                {item.maxHp > 0 &&
-                  (hpHidden ? (
-                    <PrivateHpBar />
-                  ) : (
-                    <HpBar
-                      currentHp={item.currentHp}
-                      maxHp={item.maxHp}
-                      showLabel
-                    />
-                  ))}
-                {item.maxHp > 0 && hpHidden && (
-                  <div
-                    className="mt-1 text-right text-xs font-medium"
-                    style={{
-                      color: "var(--color-text-muted)",
-                      minWidth: "6.5rem",
-                    }}
-                  >
-                    {getHpStatus(item.currentHp, item.maxHp).label}
-                  </div>
+                {item.maxHp > 0 && (
+                  <HpBar
+                    currentHp={item.currentHp}
+                    maxHp={item.maxHp}
+                    showLabel
+                    isPrivate={hpHidden}
+                  />
                 )}
               </div>
             );

@@ -1,7 +1,7 @@
 import styles from "./HpBar.module.css";
 import { getHpStatus } from "../helpers/helperMethods";
 
-function HpBar({ currentHp, maxHp, showLabel = false }) {
+function HpBar({ currentHp, maxHp, showLabel = false, isPrivate = false }) {
   const { key, label, pct } = getHpStatus(currentHp, maxHp);
   return (
     <div className="flex items-center gap-2">
@@ -9,9 +9,9 @@ function HpBar({ currentHp, maxHp, showLabel = false }) {
         className={`flex-1 rounded-full h-2 overflow-hidden ${styles.track}`}
       >
         <div
-          className={`h-full rounded-full transition-all duration-300 ${styles.bar}`}
-          data-status={key}
-          style={{ width: `${pct * 100}%` }}
+          className={`h-full rounded-full transition-all duration-300 ${isPrivate ? styles.barPrivate : styles.bar}`}
+          data-status={isPrivate ? undefined : key}
+          style={isPrivate ? undefined : { width: `${pct * 100}%` }}
         />
       </div>
       {showLabel && (
