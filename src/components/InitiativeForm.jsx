@@ -17,6 +17,7 @@ function InitiativeForm({
   editingItem,
   setEditingItem,
   onSave,
+  sessionActive = false,
 }) {
   const [name, setName] = useState("");
   const [maxHp, setMaxHp] = useState("");
@@ -27,6 +28,7 @@ function InitiativeForm({
   const [initiative, setInitiative] = useState("");
 
   const { selectedSources } = useSources();
+  const [hideDetails, setHideDetails] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [showMonsterSearch, setShowMonsterSearch] = useState(false);
   const [monsters, setMonsters] = useState([]);
@@ -136,6 +138,9 @@ function InitiativeForm({
       ac: Number(ac),
       bonusAc: Number(bonusAc),
       initiative: Number(initiative),
+      privateFields: isEditing
+        ? (editingItem.privateFields ?? { name: false, hp: false, ac: false })
+        : { name: hideDetails, hp: hideDetails, ac: hideDetails },
     };
 
     if (isEditing) {
@@ -345,40 +350,55 @@ function InitiativeForm({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2">
-          {isEditing ? (
-            <>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className={`rounded-md px-5 py-2 text-sm font-medium ${styles.saveBtn}`}
-              >
-                Save
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={resetForm}
-                className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
-              >
-                Clear
-              </button>
-              <button
-                type="submit"
-                className={`rounded-md px-5 py-2 text-sm font-medium ${styles.addBtn}`}
-              >
-                Add to Initiative
-              </button>
-            </>
+        <div className="flex items-center justify-between gap-2">
+          {!isEditing && sessionActive && (
+            <label
+              className={`flex items-center gap-2 text-sm cursor-pointer select-none ${styles.label}`}
+            >
+              <input
+                type="checkbox"
+                checked={hideDetails}
+                onChange={(e) => setHideDetails(e.target.checked)}
+                className={styles.checkbox}
+              />
+              Hide details
+            </label>
           )}
+          <div className="flex gap-2 ml-auto">
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className={`rounded-md px-5 py-2 text-sm font-medium ${styles.saveBtn}`}
+                >
+                  Save
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
+                >
+                  Clear
+                </button>
+                <button
+                  type="submit"
+                  className={`rounded-md px-5 py-2 text-sm font-medium ${styles.addBtn}`}
+                >
+                  Add to Initiative
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </form>
 

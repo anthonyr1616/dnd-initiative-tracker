@@ -144,3 +144,8 @@
   width: 1rem;
   height: 1rem;
 }
+
+.checkbox {
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}

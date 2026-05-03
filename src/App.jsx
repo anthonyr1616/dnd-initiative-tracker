@@ -316,6 +316,7 @@ function App() {
       <InitiativeList
         initiativeItems={initiativeItems}
         currentTurnId={combatStarted ? currentTurnId : null}
+        sessionActive={!!sessionId}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onUpdate={handleUpdate}
@@ -330,6 +331,7 @@ function App() {
         setIsEditing={setIsEditing}
         editingItem={editingItem}
         setEditingItem={setEditingItem}
+        sessionActive={!!sessionId}
       />
     </div>
   );

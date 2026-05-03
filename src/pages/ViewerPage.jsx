@@ -4,6 +4,32 @@ import { subscribeToSession } from "../services/sessionService";
 import HpBar from "../components/HpBar";
 import { getHpStatus } from "../helpers/helperMethods";
 
+function PrivateHpBar() {
+  return (
+    <div className="flex items-center gap-2">
+      <div
+        style={{
+          flex: 1,
+          height: "8px",
+          borderRadius: "9999px",
+          overflow: "hidden",
+          background: "var(--color-hp-bar-track)",
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            borderRadius: "9999px",
+            background:
+              "repeating-linear-gradient(45deg, var(--color-text-faint) 0px, var(--color-text-faint) 4px, transparent 4px, transparent 8px)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ViewerPage() {
   const { id } = useParams();
   const [session, setSession] = useState(undefined);
@@ -51,6 +77,7 @@ function ViewerPage() {
 
   const { items = [], currentTurnId, round } = session;
   const currentItem = items.find((i) => i.id === currentTurnId);
+  const currentItemNameHidden = currentItem?.privateFields?.name;
 
   return (
     <div style={pageStyle}>
@@ -82,9 +109,12 @@ function ViewerPage() {
           {currentItem ? (
             <span
               className="font-medium"
-              style={{ color: "var(--color-text-primary)" }}
+              style={{
+                color: "var(--color-text-primary)",
+                fontStyle: currentItemNameHidden ? "italic" : "normal",
+              }}
             >
-              {currentItem.name}&apos;s turn
+              {currentItemNameHidden ? "???" : currentItem.name}&apos;s turn
             </span>
           ) : (
             <span
@@ -108,6 +138,11 @@ function ViewerPage() {
           {items.map((item) => {
             const isActive = item.id === currentTurnId;
             const { pct } = getHpStatus(item.currentHp, item.maxHp);
+            const pf = item.privateFields ?? {};
+            const nameHidden = !!pf.name;
+            const hpHidden = !!pf.hp;
+            const acHidden = !!pf.ac;
+
             return (
               <div
                 key={item.id}
@@ -121,32 +156,61 @@ function ViewerPage() {
                 }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="font-semibold"
-                      style={{
-                        color: "var(--color-text-primary)",
-                        textDecoration: pct === 0 ? "line-through" : "none",
-                      }}
-                    >
-                      {item.name}
-                    </span>
-                  </div>
+                  <span
+                    className="font-semibold"
+                    style={{
+                      color: nameHidden
+                        ? "var(--color-text-faint)"
+                        : "var(--color-text-primary)",
+                      textDecoration: pct === 0 ? "line-through" : "none",
+                      fontStyle: nameHidden ? "italic" : "normal",
+                    }}
+                  >
+                    {nameHidden ? "???" : item.name}
+                  </span>
                   <div
                     className="flex items-center gap-4 text-sm"
                     style={{ color: "var(--color-text-muted)" }}
                   >
                     <span>Initiative {item.initiative}</span>
-                    <span>AC {item.ac + (item.bonusAc || 0)}</span>
+                    <span>
+                      AC{" "}
+                      {acHidden ? (
+                        <span
+                          style={{
+                            color: "var(--color-text-faint)",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          ??
+                        </span>
+                      ) : (
+                        item.ac + (item.bonusAc || 0)
+                      )}
+                    </span>
                   </div>
                 </div>
 
-                {item.maxHp > 0 && (
-                  <HpBar
-                    currentHp={item.currentHp}
-                    maxHp={item.maxHp}
-                    showLabel
-                  />
+                {item.maxHp > 0 &&
+                  (hpHidden ? (
+                    <PrivateHpBar />
+                  ) : (
+                    <HpBar
+                      currentHp={item.currentHp}
+                      maxHp={item.maxHp}
+                      showLabel
+                    />
+                  ))}
+                {item.maxHp > 0 && hpHidden && (
+                  <div
+                    className="mt-1 text-right text-xs font-medium"
+                    style={{
+                      color: "var(--color-text-muted)",
+                      minWidth: "6.5rem",
+                    }}
+                  >
+                    {getHpStatus(item.currentHp, item.maxHp).label}
+                  </div>
                 )}
               </div>
             );

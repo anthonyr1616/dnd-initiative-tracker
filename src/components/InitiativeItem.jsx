@@ -9,10 +9,35 @@ import {
   ChevronDown,
   HeartPlus,
   Sword,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import styles from "./InitiativeItem.module.css";
 import HpBar from "./HpBar";
 import { getHpStatus } from "../helpers/helperMethods";
+
+function PrivacyToggle({ field, privateFields, onToggle, sessionActive }) {
+  if (!sessionActive) return null;
+  const isHidden = !!privateFields[field];
+  return (
+    <button
+      type="button"
+      onClick={() => onToggle(field)}
+      className={`${styles.privacyBtn} ${isHidden ? styles.privacyBtnHidden : ""}`}
+      title={
+        isHidden
+          ? `${field} hidden from viewers — click to reveal`
+          : `${field} visible to viewers — click to hide`
+      }
+    >
+      {isHidden ? (
+        <EyeOff className="w-3.5 h-3.5" />
+      ) : (
+        <Eye className="w-3.5 h-3.5" />
+      )}
+    </button>
+  );
+}
 
 function InitiativeItem({
   id,
@@ -23,6 +48,8 @@ function InitiativeItem({
   ac,
   bonusAc,
   initiative,
+  privateFields,
+  sessionActive = false,
   onDelete,
   onEdit,
   onUpdate,
@@ -33,6 +60,12 @@ function InitiativeItem({
   canMoveDown,
 }) {
   const [amount, setAmount] = useState("");
+
+  const pf = { name: false, hp: false, ac: false, ...privateFields };
+
+  const togglePrivacy = (field) => {
+    onUpdate(id, { privateFields: { ...pf, [field]: !pf[field] } });
+  };
 
   const parseAmount = () => {
     const n = parseInt(amount, 10);
@@ -106,44 +139,74 @@ function InitiativeItem({
           )}
         </div>
 
-        <p
-          className={`text-2xl font-bold flex-1 truncate ${styles.name} ${isCurrentTurn ? styles.nameActive : ""}`}
-        >
-          {name}
-        </p>
+        {/* Name + privacy toggle */}
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <p
+            className={`text-2xl font-bold truncate ${styles.name} ${isCurrentTurn ? styles.nameActive : ""}`}
+          >
+            {name}
+          </p>
+          <PrivacyToggle
+            field="name"
+            privateFields={pf}
+            onToggle={togglePrivacy}
+            sessionActive={sessionActive}
+          />
+        </div>
 
         <div className="flex items-center gap-4 shrink-0">
-          <div
-            className="flex items-center gap-1"
-            title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}
-          >
-            <Heart className={`w-5 h-5 ${styles.heartIcon}`} strokeWidth={1} />
-            <span
-              className={`text-xl font-semibold ${styles.hpValue}`}
-              data-status={status}
+          {/* HP group */}
+          <div className="flex flex-col items-center gap-0.5">
+            <PrivacyToggle
+              field="hp"
+              privateFields={pf}
+              onToggle={togglePrivacy}
+              sessionActive={sessionActive}
+            />
+            <div
+              className="flex items-center gap-1"
+              title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}
             >
-              {currentHp}
-              {temporaryHp > 0 && (
-                <span className={`text-base ${styles.tempBonus}`}>
-                  +{temporaryHp}
-                </span>
-              )}
-            </span>
-            <span className={`text-base ${styles.hpMax}`}>/{maxHp}</span>
+              <Heart
+                className={`w-5 h-5 ${styles.heartIcon}`}
+                strokeWidth={1}
+              />
+              <span
+                className={`text-xl font-semibold ${styles.hpValue}`}
+                data-status={status}
+              >
+                {currentHp}
+                {temporaryHp > 0 && (
+                  <span className={`text-base ${styles.tempBonus}`}>
+                    +{temporaryHp}
+                  </span>
+                )}
+              </span>
+              <span className={`text-base ${styles.hpMax}`}>/{maxHp}</span>
+            </div>
           </div>
 
-          <div
-            className="flex items-center gap-1"
-            title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}
-          >
-            <Shield
-              className={`w-5 h-5 ${styles.shieldIcon}`}
-              strokeWidth={1}
+          {/* AC group */}
+          <div className="flex flex-col items-center gap-0.5">
+            <PrivacyToggle
+              field="ac"
+              privateFields={pf}
+              onToggle={togglePrivacy}
+              sessionActive={sessionActive}
             />
-            <span className="text-xl font-semibold">{ac + bonusAc}</span>
-            {bonusAc > 0 && (
-              <span className={`text-sm ${styles.bonusAc}`}>+{bonusAc}</span>
-            )}
+            <div
+              className="flex items-center gap-1"
+              title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}
+            >
+              <Shield
+                className={`w-5 h-5 ${styles.shieldIcon}`}
+                strokeWidth={1}
+              />
+              <span className="text-xl font-semibold">{ac + bonusAc}</span>
+              {bonusAc > 0 && (
+                <span className={`text-sm ${styles.bonusAc}`}>+{bonusAc}</span>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-1" title="Initiative">

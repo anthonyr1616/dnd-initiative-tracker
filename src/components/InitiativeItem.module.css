@@ -43,12 +43,24 @@
 }
 
 /* ── HP values ── */
-.hpValue[data-status="none"]    { color: var(--color-hp-text-none); }
-.hpValue[data-status="healthy"] { color: var(--color-hp-text-healthy); }
-.hpValue[data-status="good"]    { color: var(--color-hp-text-good); }
-.hpValue[data-status="warn"]    { color: var(--color-hp-text-warn); }
-.hpValue[data-status="low"]     { color: var(--color-hp-text-low); }
-.hpValue[data-status="dead"]    { color: var(--color-hp-text-dead); }
+.hpValue[data-status="none"] {
+  color: var(--color-hp-text-none);
+}
+.hpValue[data-status="healthy"] {
+  color: var(--color-hp-text-healthy);
+}
+.hpValue[data-status="good"] {
+  color: var(--color-hp-text-good);
+}
+.hpValue[data-status="warn"] {
+  color: var(--color-hp-text-warn);
+}
+.hpValue[data-status="low"] {
+  color: var(--color-hp-text-low);
+}
+.hpValue[data-status="dead"] {
+  color: var(--color-hp-text-dead);
+}
 
 .hpMax {
   color: var(--color-text-faint);
@@ -70,12 +82,24 @@
   background: var(--color-hp-bar-track);
 }
 
-.hpBar[data-status="none"]    { background: var(--color-hp-bar-none); }
-.hpBar[data-status="healthy"] { background: var(--color-hp-bar-healthy); }
-.hpBar[data-status="good"]    { background: var(--color-hp-bar-good); }
-.hpBar[data-status="warn"]    { background: var(--color-hp-bar-warn); }
-.hpBar[data-status="low"]     { background: var(--color-hp-bar-low); }
-.hpBar[data-status="dead"]    { background: var(--color-hp-bar-dead); }
+.hpBar[data-status="none"] {
+  background: var(--color-hp-bar-none);
+}
+.hpBar[data-status="healthy"] {
+  background: var(--color-hp-bar-healthy);
+}
+.hpBar[data-status="good"] {
+  background: var(--color-hp-bar-good);
+}
+.hpBar[data-status="warn"] {
+  background: var(--color-hp-bar-warn);
+}
+.hpBar[data-status="low"] {
+  background: var(--color-hp-bar-low);
+}
+.hpBar[data-status="dead"] {
+  background: var(--color-hp-bar-dead);
+}
 
 .amountInput {
   border-color: var(--color-border);
@@ -91,28 +115,63 @@
   background: var(--color-btn-damage-bg);
   color: var(--color-btn-damage-text);
 }
-.damageBtn:hover { background: var(--color-btn-damage-hover); }
+.damageBtn:hover {
+  background: var(--color-btn-damage-hover);
+}
 
 .healBtn {
   background: var(--color-btn-heal-bg);
   color: var(--color-btn-heal-text);
 }
-.healBtn:hover { background: var(--color-btn-heal-hover); }
+.healBtn:hover {
+  background: var(--color-btn-heal-hover);
+}
 
 .tempHpBtn {
   background: var(--color-btn-temp-bg);
   color: var(--color-btn-temp-text);
 }
-.tempHpBtn:hover { background: var(--color-btn-temp-hover); }
+.tempHpBtn:hover {
+  background: var(--color-btn-temp-hover);
+}
 
 .editBtn {
   background: var(--color-btn-edit-bg);
   color: var(--color-btn-edit-text);
 }
-.editBtn:hover { background: var(--color-btn-edit-hover); }
+.editBtn:hover {
+  background: var(--color-btn-edit-hover);
+}
 
 .deleteBtn {
   background: var(--color-btn-delete-bg);
   color: var(--color-btn-delete-text);
 }
-.deleteBtn:hover { background: var(--color-btn-delete-hover); }
+.deleteBtn:hover {
+  background: var(--color-btn-delete-hover);
+}
+
+.privacyBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-faint);
+  padding: 2px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.privacyBtn:hover {
+  color: var(--color-text-muted);
+  background: var(--color-surface-hover);
+}
+
+.privacyBtnHidden {
+  color: var(--color-brand);
+}
+.privacyBtnHidden:hover {
+  color: var(--color-brand-hover);
+  background: var(--color-surface-hover);
+}
