@@ -1,6 +1,7 @@
 import { db } from "../firebase";
 import {
   doc,
+  getDoc,
   setDoc,
   deleteDoc,
   onSnapshot,
@@ -29,6 +30,11 @@ export const updateSession = (id, state) =>
   });
 
 export const deleteSession = (id) => deleteDoc(sessionRef(id));
+
+export const getSession = async (id) => {
+  const snap = await getDoc(sessionRef(id));
+  return snap.exists() ? snap.data() : null;
+};
 
 export const subscribeToSession = (id, callback) =>
   onSnapshot(sessionRef(id), (snap) =>

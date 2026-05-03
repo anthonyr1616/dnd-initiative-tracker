@@ -7,6 +7,7 @@ import {
   createSession,
   updateSession,
   deleteSession,
+  getSession,
 } from "./services/sessionService";
 
 const STORAGE_KEY = "dnd-initiative-tracker";
@@ -35,17 +36,26 @@ function App() {
   const [combatStarted, setCombatStarted] = useState(
     saved?.combatStarted ?? false,
   );
-  const [sessionId, setSessionId] = useState(null);
+  const [sessionId, setSessionId] = useState(saved?.sessionId ?? null);
   const [copied, setCopied] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const syncTimeoutRef = useRef(null);
+  const initialSessionIdRef = useRef(saved?.sessionId ?? null);
 
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ initiativeItems, currentTurnId, round, combatStarted }),
+      JSON.stringify({ initiativeItems, currentTurnId, round, combatStarted, sessionId }),
     );
-  }, [initiativeItems, currentTurnId, round, combatStarted]);
+  }, [initiativeItems, currentTurnId, round, combatStarted, sessionId]);
+
+  useEffect(() => {
+    const id = initialSessionIdRef.current;
+    if (!id) return;
+    getSession(id).then((data) => {
+      if (data === null) setSessionId(null);
+    });
+  }, []);
 
   useEffect(() => {
     if (!sessionId) return;
