@@ -34,7 +34,11 @@ const formatKeyValueArray = (obj, capitalize = true) =>
     return `${formattedKey} ${value}`;
   });
 
-const calculateModifier = (score) => Math.floor((score - 10) / 2);
+const calculateModifier = (score) => {
+  const num = Number(score);
+  if (!Number.isFinite(num)) return null;
+  return Math.floor((num - 10) / 2);
+};
 
 const rollDice = (sides) => Math.floor(Math.random() * sides) + 1;
 
@@ -54,9 +58,9 @@ function getHpStatus(current, max) {
   if (!max) return { key: "none", label: "—", pct: 0 };
   const pct = Math.max(0, current) / max;
   if (pct <= 0) return { key: "dead", label: "Defeated", pct: 0 };
-  if (pct <= 0.25) return { key: "low", label: "Critically Wounded", pct };
+  if (pct <= 0.2) return { key: "low", label: "Critically Wounded", pct };
   if (pct <= 0.5) return { key: "warn", label: "Bloodied", pct };
-  if (pct <= 0.75) return { key: "good", label: "Minor Injuries", pct };
+  if (pct <= 0.8) return { key: "good", label: "Minor Injuries", pct };
   return { key: "healthy", label: "Healthy", pct };
 }
 

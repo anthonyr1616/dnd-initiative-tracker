@@ -233,6 +233,7 @@ function InitiativeForm({
                     disabled={!selectedEntity?.hitDice}
                     className={styles.rerollBtn}
                     aria-label="Reroll hit points"
+                    title={`Reroll hit dice ${selectedEntity?.hitDice ? `(${selectedEntity.hitDice})` : ""}`}
                   >
                     <Dices className="w-4 h-4" />
                   </button>
@@ -332,6 +333,7 @@ function InitiativeForm({
                 onClick={handleRerollInitiative}
                 className={styles.rerollBtn}
                 aria-label="Reroll initiative"
+                title={`Reroll initiative (d20 + ${calculateModifier(selectedEntity?.stats?.dexterity) ?? "0"})`}
               >
                 <Dices className="w-4 h-4" />
               </button>
