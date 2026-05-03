@@ -21,6 +21,17 @@
   background: var(--color-hp-bar-dead);
 }
 
+.barPrivate {
+  width: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-text-faint) 0px,
+    var(--color-text-faint) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
 .label[data-status="healthy"] {
   color: var(--color-hp-text-healthy);
 }

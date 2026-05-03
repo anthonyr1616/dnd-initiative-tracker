@@ -16,11 +16,11 @@ function HpBar({ currentHp, maxHp, showLabel = false, isPrivate = false }) {
       </div>
       {showLabel && (
         <span
-          className={`text-xs font-medium shrink-0 text-right ${styles.label}`}
-          style={{ minWidth: "6.5rem" }}
-          data-status={key}
+          className={`text-xs font-medium shrink-0 text-right ${isPrivate ? "" : styles.label}`}
+          style={{ minWidth: "6.5rem", color: isPrivate ? "var(--color-text-faint)" : undefined }}
+          data-status={isPrivate ? undefined : key}
         >
-          {label}
+          {isPrivate ? "???" : label}
         </span>
       )}
     </div>
