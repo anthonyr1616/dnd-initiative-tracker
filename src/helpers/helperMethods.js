@@ -59,7 +59,7 @@ const rollHitDice = (formula) => {
 };
 
 function getHpStatus(current, max) {
-  if (!max) return { key: "none", label: "—", pct: 0 };
+  if (!max) return { key: "none", label: "-", pct: 0 };
   const pct = Math.max(0, current) / max;
   if (pct <= 0) return { key: "dead", label: "Defeated", pct: 0 };
   if (pct <= 0.2) return { key: "low", label: "Critically Wounded", pct };

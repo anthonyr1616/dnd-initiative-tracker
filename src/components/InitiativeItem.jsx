@@ -26,8 +26,8 @@ function PrivacyToggle({ field, privateFields, onToggle, sessionActive }) {
       className={`${styles.privacyBtn} ${isHidden ? styles.privacyBtnHidden : ""}`}
       title={
         isHidden
-          ? `${field} hidden from viewers — click to reveal`
-          : `${field} visible to viewers — click to hide`
+          ? `${field} hidden from viewers - click to reveal`
+          : `${field} visible to viewers - click to hide`
       }
     >
       {isHidden ? (
@@ -165,7 +165,7 @@ function InitiativeItem({
             />
             <div
               className="flex items-center gap-1"
-              title={`HP: ${currentHp}${temporaryHp > 0 ? `+${temporaryHp} temp` : ""} / ${maxHp}`}
+              title={`HP`}
             >
               <Heart
                 className={`w-5 h-5 ${styles.heartIcon}`}
@@ -196,7 +196,7 @@ function InitiativeItem({
             />
             <div
               className="flex items-center gap-1"
-              title={`AC: ${ac + bonusAc}${bonusAc > 0 ? ` (${ac}+${bonusAc})` : ""}`}
+              title={`Armor Class`}
             >
               <Shield
                 className={`w-5 h-5 ${styles.shieldIcon}`}
@@ -252,7 +252,7 @@ function InitiativeItem({
         <button
           onClick={handleDamage}
           className={`px-3 py-1 text-sm rounded font-medium cursor-pointer  flex items-center gap-1  ${styles.damageBtn}`}
-          title="Apply damage (temp HP absorbs first)"
+          title="Apply damage"
         >
           <Sword className="w-4 h-4" />
           Damage
@@ -267,7 +267,7 @@ function InitiativeItem({
         <button
           onClick={handleSetTempHp}
           className={`px-3 py-1 text-sm rounded font-medium cursor-pointer flex items-center gap-1 ${styles.tempHpBtn}`}
-          title="Set temp HP (uses highest value per D&D rules)"
+          title="Set temp HP"
         >
           <HeartPlus className="w-4 h-4" />
           Temp HP

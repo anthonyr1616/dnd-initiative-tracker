@@ -228,7 +228,7 @@ function InitiativeForm({
                     type="number"
                     max="999"
                     min="0"
-                    placeholder="—"
+                    placeholder="#"
                     value={maxHp}
                     onChange={(e) => {
                       setMaxHp(e.target.value);
@@ -257,7 +257,7 @@ function InitiativeForm({
                 <input
                   type="number"
                   max="999"
-                  placeholder="—"
+                  placeholder="#"
                   value={currentHp}
                   onChange={(e) =>
                     setCurrentHp(Math.min(e.target.value, maxHp))
@@ -275,7 +275,7 @@ function InitiativeForm({
                   type="number"
                   max="999"
                   min="0"
-                  placeholder="—"
+                  placeholder="#"
                   value={temporaryHp}
                   onChange={(e) => setTemporaryHp(e.target.value)}
                   className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
@@ -300,7 +300,7 @@ function InitiativeForm({
                 <input
                   type="number"
                   max="999"
-                  placeholder="—"
+                  placeholder="#"
                   value={ac}
                   onChange={(e) => setAc(e.target.value)}
                   className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
@@ -315,7 +315,7 @@ function InitiativeForm({
                 <input
                   type="number"
                   max="999"
-                  placeholder="—"
+                  placeholder="#"
                   value={bonusAc}
                   onChange={(e) => setBonusAc(e.target.value)}
                   className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}
@@ -332,7 +332,7 @@ function InitiativeForm({
               <input
                 type="number"
                 max="999"
-                placeholder="—"
+                placeholder="#"
                 value={initiative}
                 onChange={(e) => setInitiative(e.target.value)}
                 className={`rounded-md border px-3 py-2 text-sm w-full ${styles.input}`}

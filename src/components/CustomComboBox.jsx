@@ -62,7 +62,7 @@ function CustomComboBox({
           ))}
           {totalMatches > MAX_RESULTS && (
             <p className="px-3 py-2 text-xs text-gray-400 border-t">
-              Showing {MAX_RESULTS} of {totalMatches} — keep typing to narrow
+              Showing {MAX_RESULTS} of {totalMatches} - keep typing to narrow
               results
             </p>
           )}

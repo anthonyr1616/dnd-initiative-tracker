@@ -155,7 +155,6 @@ function flattenMonsterEntry(entry, output) {
     return;
   }
 
-  // Named list item (list-hang-notitle) — stored as object so the name can be bolded
   if (entry.type === "item" && entry.name) {
     const itemName = parseMonsterTaggedText(entry.name);
     const descParts = [];

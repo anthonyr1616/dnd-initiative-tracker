@@ -250,7 +250,6 @@ export default function SourcesModal({
 function GroupHeader({ group, allGroupSelected, someGroupSelected, onToggle }) {
   const ref = useRef(null);
 
-  // useEffect is not available here — handle indeterminate via ref callback
   const setRef = (el) => {
     if (el) {
       el.indeterminate = someGroupSelected && !allGroupSelected;
