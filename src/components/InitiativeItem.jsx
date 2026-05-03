@@ -202,7 +202,7 @@ function InitiativeItem({
                 className={`w-5 h-5 ${styles.shieldIcon}`}
                 strokeWidth={1}
               />
-              <span className="text-xl font-semibold">{ac + bonusAc}</span>
+              <span className="text-xl font-semibold">{ac}</span>
               {bonusAc > 0 && (
                 <span className={`text-sm ${styles.bonusAc}`}>+{bonusAc}</span>
               )}
