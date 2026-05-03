@@ -75,6 +75,7 @@ export const SOURCE_FORMAT_MAP = {
   DC: "Divine Contention (2019)",
   SDW: "Sleeping Dragon's Wake (2019)",
   SLW: "Storm Lord's Wrath (2019)",
+  DoSI: "Dragons of Stormwreck Isle (2022)",
 };
 
 export function formatSource(source = "") {

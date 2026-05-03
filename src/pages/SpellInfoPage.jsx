@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { getAllSpells, getSpell } from "../services/spellApi";
+import { useSources } from "../helpers/useSources";
 import CustomComboBox from "../components/CustomComboBox";
 import SpellCard from "../components/SpellCard";
 
 const SpellInfoPage = () => {
+  const { selectedSources } = useSources();
   const [spells, setSpells] = useState([]);
   const [selectedSpell, setSelectedSpell] = useState(null);
   const [spellDetails, setSpellDetails] = useState(null);
@@ -12,14 +14,14 @@ const SpellInfoPage = () => {
   useEffect(() => {
     async function fetchSpells() {
       try {
-        const data = await getAllSpells();
+        const data = await getAllSpells(selectedSources);
         setSpells(data);
       } catch (err) {
         console.error("Failed to fetch spells:", err);
       }
     }
     fetchSpells();
-  }, []);
+  }, [selectedSources]);
 
   useEffect(() => {
     if (!selectedSpell) return;

@@ -15,7 +15,8 @@ import { MonsterDetails } from "../models/MonsterDetails.js";
 async function loadBestiaryIndex() {
   if (cache.index) return cache.index;
   const response = await fetch(BESTIARY_INDEX_URL);
-  if (!response.ok) throw new Error(`Failed to load bestiary index: ${response.status}`);
+  if (!response.ok)
+    throw new Error(`Failed to load bestiary index: ${response.status}`);
   cache.index = await response.json();
   return cache.index;
 }
@@ -27,10 +28,13 @@ async function loadMonsterRecords() {
   const results = await Promise.all(
     fileNames.map(async (fileName) => {
       const response = await fetch(`${BESTIARY_BASE_PATH}${fileName}`);
-      if (!response.ok) throw new Error(`Failed to load bestiary file ${fileName}: ${response.status}`);
+      if (!response.ok)
+        throw new Error(
+          `Failed to load bestiary file ${fileName}: ${response.status}`,
+        );
       const data = await response.json();
       return data.monster || [];
-    })
+    }),
   );
   cache.monsterRecords = results.flat();
   return cache.monsterRecords;
@@ -41,11 +45,16 @@ function normalizeApostrophes(str) {
 }
 
 function applyReplaceTxt(value, regex, replacement) {
-  if (typeof value === "string") return normalizeApostrophes(value).replace(regex, replacement);
-  if (Array.isArray(value)) return value.map((v) => applyReplaceTxt(v, regex, replacement));
+  if (typeof value === "string")
+    return normalizeApostrophes(value).replace(regex, replacement);
+  if (Array.isArray(value))
+    return value.map((v) => applyReplaceTxt(v, regex, replacement));
   if (value && typeof value === "object") {
     return Object.fromEntries(
-      Object.entries(value).map(([k, v]) => [k, applyReplaceTxt(v, regex, replacement)])
+      Object.entries(value).map(([k, v]) => [
+        k,
+        applyReplaceTxt(v, regex, replacement),
+      ]),
     );
   }
   return value;
@@ -57,7 +66,10 @@ function applyMod(obj, mod) {
     for (const entry of entries) {
       if (entry.mode !== "replaceTxt") continue;
       const flags = entry.flags || "";
-      const regex = new RegExp(entry.replace, flags.includes("g") ? flags : `${flags}g`);
+      const regex = new RegExp(
+        entry.replace,
+        flags.includes("g") ? flags : `${flags}g`,
+      );
       if (field === "*") {
         for (const key of Object.keys(obj)) {
           obj[key] = applyReplaceTxt(obj[key], regex, entry.with);
@@ -101,17 +113,26 @@ async function getResolvedRecords() {
   return cache.resolvedRecords;
 }
 
-async function getAllMonsters() {
-  if (cache.summaries) return cache.summaries;
+async function getAllMonsters(selectedSources) {
+  if (!cache.summaries) {
+    const records = await getResolvedRecords();
+    const summaries = records.map((monster) => {
+      const id = createMonsterId(monster.name, monster.source);
+      return new MonsterSummary({
+        id,
+        name: monster.name,
+        source: monster.source,
+        apiUrl: null,
+      });
+    });
+    cache.summaries = summaries.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
-  const records = await getResolvedRecords();
-  const summaries = records.map((monster) => {
-    const id = createMonsterId(monster.name, monster.source);
-    return new MonsterSummary({ id, name: monster.name, source: monster.source, apiUrl: null });
-  });
-
-  cache.summaries = summaries.sort((a, b) => a.name.localeCompare(b.name));
-  return cache.summaries;
+  if (!selectedSources || selectedSources.length === 0) return cache.summaries;
+  const sourceSet = new Set(selectedSources.map((s) => s.toUpperCase()));
+  return cache.summaries.filter((s) =>
+    sourceSet.has((s.source || "").toUpperCase()),
+  );
 }
 
 async function getMonster(monsterId) {
@@ -119,7 +140,7 @@ async function getMonster(monsterId) {
 
   const records = await getResolvedRecords();
   const rawMonster = records.find(
-    (monster) => createMonsterId(monster.name, monster.source) === monsterId
+    (monster) => createMonsterId(monster.name, monster.source) === monsterId,
   );
 
   if (!rawMonster) {

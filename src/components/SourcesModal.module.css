@@ -1,0 +1,101 @@
+.modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.title {
+  color: var(--color-text-primary);
+}
+
+.description {
+  color: var(--color-text-muted);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.closeBtn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.searchInput {
+  background: var(--color-input-bg);
+  border-color: var(--color-border);
+  color: var(--color-input-text);
+}
+.searchInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+
+.controlsRow {
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.selectAllBtn {
+  background: var(--color-brand);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+.selectAllBtn:hover:not(:disabled) {
+  background: var(--color-brand-hover);
+}
+.selectAllBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.clearAllBtn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-btn-cancel-text);
+  cursor: pointer;
+}
+.clearAllBtn:hover:not(:disabled) {
+  background: var(--color-btn-cancel-hover);
+}
+.clearAllBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.countText {
+  color: var(--color-text-muted);
+}
+
+.groupHeader {
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+.groupLabel {
+  color: var(--color-text-secondary);
+}
+
+.sourceRow:hover {
+  background: var(--color-surface-hover);
+}
+
+.sourceCode {
+  color: var(--color-brand);
+}
+
+.sourceName {
+  color: var(--color-text-primary);
+}
+
+.checkbox {
+  accent-color: var(--color-brand);
+  flex-shrink: 0;
+  cursor: pointer;
+}

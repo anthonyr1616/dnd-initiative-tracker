@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./InitiativeForm.module.css";
 import { getAllMonsters, getMonster } from "../services/monsterApi";
+import { useSources } from "../helpers/useSources";
 import CustomComboBox from "./CustomComboBox";
 import {
   rollDice,
@@ -25,6 +26,7 @@ function InitiativeForm({
   const [bonusAc, setBonusAc] = useState("");
   const [initiative, setInitiative] = useState("");
 
+  const { selectedSources } = useSources();
   const [showMenu, setShowMenu] = useState(false);
   const [showMonsterSearch, setShowMonsterSearch] = useState(false);
   const [monsters, setMonsters] = useState([]);
@@ -32,7 +34,7 @@ function InitiativeForm({
   const [isLoadingMonsters, setIsLoadingMonsters] = useState(false);
   const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState(null);
-  const monstersLoadedRef = useRef(false);
+  const loadedSourcesKeyRef = useRef(null);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -48,14 +50,16 @@ function InitiativeForm({
   }, [isEditing, editingItem]);
 
   useEffect(() => {
-    if (!showMonsterSearch || monstersLoadedRef.current) return;
+    if (!showMonsterSearch) return;
+    const key = JSON.stringify(selectedSources);
+    if (loadedSourcesKeyRef.current === key) return;
     setIsLoadingMonsters(true);
-    getAllMonsters().then((data) => {
+    getAllMonsters(selectedSources).then((data) => {
       setMonsters(data);
-      monstersLoadedRef.current = true;
+      loadedSourcesKeyRef.current = key;
       setIsLoadingMonsters(false);
     });
-  }, [showMonsterSearch]);
+  }, [showMonsterSearch, selectedSources]);
 
   useEffect(() => {
     if (!showMenu) return;

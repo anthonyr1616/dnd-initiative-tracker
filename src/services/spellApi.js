@@ -37,36 +37,40 @@ async function loadSpellRecords() {
     fileNames.map(async (fileName) => {
       const response = await fetch(`${SPELL_BASE_PATH}${fileName}`);
       if (!response.ok) {
-        throw new Error(`Failed to load spell file ${fileName}: ${response.status}`);
+        throw new Error(
+          `Failed to load spell file ${fileName}: ${response.status}`,
+        );
       }
       const data = await response.json();
       return data.spell || [];
-    })
+    }),
   );
 
   cache.spellRecords = results.flat();
   return cache.spellRecords;
 }
 
-async function getAllSpells() {
-  if (cache.summaries) {
-    return cache.summaries;
+async function getAllSpells(selectedSources) {
+  if (!cache.summaries) {
+    const spellRecords = await loadSpellRecords();
+    const summaries = spellRecords.map((spell) => {
+      const id = createSpellId(spell.name, spell.source);
+      return new SpellSummary({
+        id,
+        name: spell.name,
+        level: spell.level ?? 0,
+        source: spell.source,
+        apiUrl: null,
+      });
+    });
+    cache.summaries = summaries.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  const spellRecords = await loadSpellRecords();
-  const summaries = spellRecords.map((spell) => {
-    const id = createSpellId(spell.name, spell.source);
-    return new SpellSummary({
-      id,
-      name: spell.name,
-      level: spell.level ?? 0,
-      source: spell.source,
-      apiUrl: null,
-    });
-  });
-
-  cache.summaries = summaries.sort((a, b) => a.name.localeCompare(b.name));
-  return cache.summaries;
+  if (!selectedSources || selectedSources.length === 0) return cache.summaries;
+  const sourceSet = new Set(selectedSources.map((s) => s.toUpperCase()));
+  return cache.summaries.filter((s) =>
+    sourceSet.has((s.source || "").toUpperCase()),
+  );
 }
 
 async function getSpell(spellId) {
@@ -76,7 +80,7 @@ async function getSpell(spellId) {
 
   const spellRecords = await loadSpellRecords();
   const rawSpell = spellRecords.find(
-    (spell) => createSpellId(spell.name, spell.source) === spellId
+    (spell) => createSpellId(spell.name, spell.source) === spellId,
   );
 
   if (!rawSpell) {

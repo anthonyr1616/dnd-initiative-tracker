@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { getAllMonsters, getMonster } from "../services/monsterApi";
+import { useSources } from "../helpers/useSources";
 import CustomComboBox from "../components/CustomComboBox";
 import MonsterCard from "../components/MonsterCard";
 
 const MonsterInfoPage = () => {
+  const { selectedSources } = useSources();
   const [monsters, setMonsters] = useState([]);
   const [selectedMonster, setSelectedMonster] = useState(null);
   const [monsterDetails, setMonsterDetails] = useState(null);
@@ -12,14 +14,14 @@ const MonsterInfoPage = () => {
   useEffect(() => {
     async function fetchMonsters() {
       try {
-        const data = await getAllMonsters();
+        const data = await getAllMonsters(selectedSources);
         setMonsters(data);
       } catch (err) {
         console.error("Failed to fetch monsters:", err);
       }
     }
     fetchMonsters();
-  }, []);
+  }, [selectedSources]);
 
   useEffect(() => {
     if (!selectedMonster) return;
