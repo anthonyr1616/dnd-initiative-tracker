@@ -23,24 +23,22 @@ function loadState() {
 }
 
 function App() {
-  const saved = loadState();
   const [initiativeItems, setInitiativeItems] = useState(
-    saved?.initiativeItems ?? [],
+    () => loadState()?.initiativeItems ?? [],
   );
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [currentTurnId, setCurrentTurnId] = useState(
-    saved?.currentTurnId ?? null,
+    () => loadState()?.currentTurnId ?? null,
   );
-  const [round, setRound] = useState(saved?.round ?? 1);
+  const [round, setRound] = useState(() => loadState()?.round ?? 1);
   const [combatStarted, setCombatStarted] = useState(
-    saved?.combatStarted ?? false,
+    () => loadState()?.combatStarted ?? false,
   );
-  const [sessionId, setSessionId] = useState(saved?.sessionId ?? null);
+  const [sessionId, setSessionId] = useState(() => loadState()?.sessionId ?? null);
   const [copied, setCopied] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const syncTimeoutRef = useRef(null);
-  const initialSessionIdRef = useRef(saved?.sessionId ?? null);
 
   useEffect(() => {
     localStorage.setItem(
@@ -56,7 +54,7 @@ function App() {
   }, [initiativeItems, currentTurnId, round, combatStarted, sessionId]);
 
   useEffect(() => {
-    const id = initialSessionIdRef.current;
+    const id = loadState()?.sessionId;
     if (!id) return;
     getSession(id).then((data) => {
       if (data === null) 
