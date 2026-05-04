@@ -73,15 +73,21 @@ function Layout() {
               <Link to="/" className={styles.navLink}>
                 Home
               </Link>
+              |
               <Link to="/monsters" className={styles.navLink}>
                 Monsters
               </Link>
               <Link to="/spells" className={styles.navLink}>
                 Spells
               </Link>
+              |
               <Link to="/characters" className={styles.navLink}>
                 Characters
               </Link>
+              <Link to="/parties" className={styles.navLink}>
+                Parties
+              </Link>
+              |
               <div className="ml-auto flex items-center gap-2">
                 <HeaderControls />
               </div>

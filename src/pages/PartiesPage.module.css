@@ -1,0 +1,145 @@
+.modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.modalTitle {
+  color: var(--color-text-primary);
+}
+
+.label {
+  color: var(--color-text-label);
+}
+
+.input {
+  background: var(--color-input-bg);
+  color: var(--color-input-text);
+  border-color: var(--color-border);
+}
+.input:focus {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+.errorMsg {
+  color: var(--color-btn-delete-text);
+}
+
+.charList {
+  border-color: var(--color-border);
+  max-height: 220px;
+}
+
+.charOption {
+  border-bottom: 1px solid var(--color-border-muted);
+}
+.charOption:last-child {
+  border-bottom: none;
+}
+.charOption:hover {
+  background: var(--color-surface-hover);
+}
+
+.charName {
+  color: var(--color-text-primary);
+}
+
+.charStat {
+  color: var(--color-text-faint);
+}
+
+.cancelBtn {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-btn-cancel-text);
+}
+.cancelBtn:hover {
+  background: var(--color-surface-hover);
+}
+
+.saveBtn {
+  background: var(--color-btn-primary-bg);
+  color: #ffffff;
+  border: none;
+}
+.saveBtn:hover {
+  background: var(--color-btn-primary-hover);
+}
+
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-muted);
+}
+
+.cardIcon {
+  color: var(--color-text-faint);
+}
+
+.cardName {
+  color: var(--color-text-primary);
+}
+
+.memberList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.memberChip {
+  background: var(--color-surface-hover);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-muted);
+}
+
+.editBtn {
+  background: var(--color-btn-edit-bg);
+  color: var(--color-btn-edit-text);
+  border: none;
+}
+.editBtn:hover {
+  background: var(--color-btn-edit-hover);
+}
+
+.deleteBtn {
+  background: var(--color-btn-delete-bg);
+  color: var(--color-btn-delete-text);
+  border: none;
+}
+.deleteBtn:hover {
+  background: var(--color-btn-delete-hover);
+}
+
+.emptyCard {
+  background: var(--color-surface-card);
+  border: 1px dashed var(--color-border-muted);
+}
+
+.emptyIcon {
+  color: var(--color-text-faint);
+}
+
+.emptyTitle {
+  color: var(--color-text-secondary);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.signInBtn {
+  background: var(--color-brand);
+  color: #ffffff;
+  border: none;
+}
+.signInBtn:hover {
+  background: var(--color-brand-hover);
+}
+
+.newBtn {
+  background: var(--color-brand);
+  color: #ffffff;
+  border: none;
+}
+.newBtn:hover {
+  background: var(--color-brand-hover);
+}

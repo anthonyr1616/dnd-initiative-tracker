@@ -3,6 +3,7 @@ import App from "./App";
 import MonsterInfoPage from "./pages/MonsterInfoPage";
 import SpellInfoPage from "./pages/SpellInfoPage";
 import CharactersPage from "./pages/CharactersPage";
+import PartiesPage from "./pages/PartiesPage";
 import ErrorPage from "./pages/ErrorPage";
 import ViewerPage from "./pages/ViewerPage";
 
@@ -27,6 +28,10 @@ const routes = [
       {
         path: "characters",
         element: <CharactersPage />,
+      },
+      {
+        path: "parties",
+        element: <PartiesPage />,
       },
     ],
   },
