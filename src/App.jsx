@@ -9,6 +9,7 @@ import {
   deleteSession,
   getSession,
 } from "./services/sessionService";
+import { useCombat } from "./helpers/useCombat";
 
 const STORAGE_KEY = "dnd-initiative-tracker";
 
@@ -28,17 +29,19 @@ function App() {
   );
   const [isEditing, setIsEditing] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [currentTurnId, setCurrentTurnId] = useState(
-    () => loadState()?.currentTurnId ?? null,
+  const [sessionId, setSessionId] = useState(
+    () => loadState()?.sessionId ?? null,
   );
-  const [round, setRound] = useState(() => loadState()?.round ?? 1);
-  const [combatStarted, setCombatStarted] = useState(
-    () => loadState()?.combatStarted ?? false,
-  );
-  const [sessionId, setSessionId] = useState(() => loadState()?.sessionId ?? null);
   const [copied, setCopied] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const syncTimeoutRef = useRef(null);
+
+  const combat = useCombat(initiativeItems, {
+    initCurrentTurnId: () => loadState()?.currentTurnId ?? null,
+    initRound: () => loadState()?.round ?? 1,
+    initCombatStarted: () => loadState()?.combatStarted ?? false,
+  });
+  const { currentTurnId, round, combatStarted } = combat;
 
   useEffect(() => {
     localStorage.setItem(
@@ -57,8 +60,7 @@ function App() {
     const id = loadState()?.sessionId;
     if (!id) return;
     getSession(id).then((data) => {
-      if (data === null) 
-        setSessionId(null);
+      if (data === null) setSessionId(null);
       else if (data.expiresAt < Date.now()) {
         setSessionId(null);
         deleteSession(id);
@@ -107,12 +109,6 @@ function App() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const getCurrentIndex = (items, turnId) => {
-    if (turnId === null) return 0;
-    const idx = items.findIndex((i) => i.id === turnId);
-    return idx === -1 ? 0 : idx;
-  };
-
   const handleAdd = (newCharacter) => {
     setInitiativeItems((prev) =>
       [...prev, newCharacter].sort((a, b) => b.initiative - a.initiative),
@@ -130,21 +126,13 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    if (isEditing && editingItem && editingItem.id === id) {
+    if (isEditing && editingItem?.id === id) {
       setIsEditing(false);
       setEditingItem(null);
     }
     const next = initiativeItems.filter((item) => item.id !== id);
     setInitiativeItems(next);
-    if (next.length === 0) {
-      setCurrentTurnId(null);
-      setCombatStarted(false);
-      setRound(1);
-    } else if (combatStarted && id === currentTurnId) {
-      const oldIdx = initiativeItems.findIndex((i) => i.id === id);
-      const newIdx = Math.min(oldIdx, next.length - 1);
-      setCurrentTurnId(next[newIdx].id);
-    }
+    combat.onItemDeleted(id, next);
   };
 
   const handleEdit = (id) => {
@@ -179,48 +167,11 @@ function App() {
     });
   };
 
-  const handleStartCombat = () => {
-    if (initiativeItems.length === 0) return;
-    setCombatStarted(true);
-    setCurrentTurnId(initiativeItems[0].id);
-  };
-
-  const handleNextTurn = () => {
-    if (initiativeItems.length === 0) return;
-    const idx = getCurrentIndex(initiativeItems, currentTurnId);
-    const next = idx + 1;
-    if (next >= initiativeItems.length) {
-      setRound((r) => r + 1);
-      setCurrentTurnId(initiativeItems[0].id);
-    } else {
-      setCurrentTurnId(initiativeItems[next].id);
-    }
-  };
-
-  const handlePrevTurn = () => {
-    if (initiativeItems.length === 0) return;
-    const idx = getCurrentIndex(initiativeItems, currentTurnId);
-    if (idx === 0) {
-      setRound((r) => Math.max(1, r - 1));
-      setCurrentTurnId(initiativeItems[initiativeItems.length - 1].id);
-    } else {
-      setCurrentTurnId(initiativeItems[idx - 1].id);
-    }
-  };
-
-  const handleResetCombat = () => {
-    setCombatStarted(false);
-    setCurrentTurnId(null);
-    setRound(1);
-  };
-
   const handleClearAll = () => {
     setInitiativeItems([]);
-    setCurrentTurnId(null);
-    setRound(1);
-    setCombatStarted(false);
     setIsEditing(false);
     setEditingItem(null);
+    combat.reset();
   };
 
   return (
@@ -273,29 +224,24 @@ function App() {
                 </span>
                 <span className={styles.divider}>|</span>
                 <span className={`font-medium ${styles.turnName}`}>
-                  {
-                    initiativeItems[
-                      getCurrentIndex(initiativeItems, currentTurnId)
-                    ]?.name
-                  }
-                  &apos;s turn
+                  {combat.currentTurnName}&apos;s turn
                 </span>
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={handlePrevTurn}
+                  onClick={combat.prev}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.navBtn}`}
                 >
                   ← Prev
                 </button>
                 <button
-                  onClick={handleNextTurn}
+                  onClick={combat.next}
                   className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
                 >
                   Next →
                 </button>
                 <button
-                  onClick={handleResetCombat}
+                  onClick={combat.reset}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.resetBtn}`}
                 >
                   Reset
@@ -315,7 +261,7 @@ function App() {
               </span>
               <div className="flex gap-2">
                 <button
-                  onClick={handleStartCombat}
+                  onClick={combat.start}
                   className={`px-4 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.primaryBtn}`}
                 >
                   Start Combat
