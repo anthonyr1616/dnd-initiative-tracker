@@ -37,7 +37,7 @@
 .userName {
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.8rem;
-  max-width: 140px;
+  max-width: 450px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

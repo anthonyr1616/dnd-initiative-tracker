@@ -20,7 +20,7 @@ function HeaderControls() {
         (user ? (
           <div className={`flex items-center gap-2 ${styles.authArea}`}>
             <span className={styles.userName}>
-              {user.displayName || user.email}
+              Signed in as <strong>{user.displayName || user.email}</strong>
             </span>
             <button
               type="button"
@@ -73,21 +73,22 @@ function Layout() {
               <Link to="/" className={styles.navLink}>
                 Home
               </Link>
-              |
+              <div className="flex items-center gap-4 border-l-1 pl-4">
               <Link to="/monsters" className={styles.navLink}>
                 Monsters
               </Link>
-              <Link to="/spells" className={styles.navLink}>
-                Spells
-              </Link>
-              |
-              <Link to="/characters" className={styles.navLink}>
-                Characters
-              </Link>
-              <Link to="/parties" className={styles.navLink}>
-                Parties
-              </Link>
-              |
+                <Link to="/spells" className={styles.navLink}>
+                  Spells
+                </Link>
+              </div>
+              <div className="flex items-center gap-4 border-l-1 pl-4">
+                <Link to="/characters" className={styles.navLink}>
+                  Characters
+                </Link>
+                <Link to="/parties" className={styles.navLink}>
+                  Parties
+                </Link>
+              </div>
               <div className="ml-auto flex items-center gap-2">
                 <HeaderControls />
               </div>
