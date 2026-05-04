@@ -8,6 +8,7 @@ import {
   deleteCharacter,
 } from "../services/characterService";
 import styles from "./CharactersPage.module.css";
+import { calculateModifier } from "../helpers/helperMethods";
 
 const EMPTY_FORM = {
   name: "",
@@ -147,7 +148,7 @@ function CharacterForm({ initial, isSaving, onSave, onCancel }) {
 
 function CharacterCard({ character, onEdit, onDelete }) {
   const totalAc = (character.ac ?? 0) + (character.bonusAc ?? 0);
-  const dexMod = Math.floor(((character.dexterity ?? 10) - 10) / 2);
+  const dexMod = calculateModifier(character.dexterity ?? 10);
 
   return (
     <div className={`rounded-xl p-4 ${styles.card}`}>
