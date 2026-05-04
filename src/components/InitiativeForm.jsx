@@ -13,6 +13,44 @@ import { useAuth } from "../helpers/useAuth";
 import { getCharacters } from "../services/characterService";
 import { getParties } from "../services/partyService";
 
+function SearchModal({
+  title,
+  onClose,
+  isLoading,
+  loadingText = "Loading...",
+  children,
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
+            {title}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className={styles.closeBtn}
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        {isLoading ? (
+          <p className={`text-sm ${styles.loadingText}`}>{loadingText}</p>
+        ) : (
+          children
+        )}
+      </div>
+    </div>
+  );
+}
+
 function InitiativeForm({
   onAdd,
   isEditing,
@@ -283,7 +321,7 @@ function InitiativeForm({
                     }}
                     className={`block w-full text-left px-4 py-2 text-sm ${styles.dropdownItem}`}
                   >
-                    Use Monster
+                    Add Monster
                   </button>
                   {user && (
                     <>
@@ -509,165 +547,100 @@ function InitiativeForm({
       </form>
 
       {showCharacterSearch && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowCharacterSearch(false);
-          }}
+        <SearchModal
+          title="Select Character"
+          onClose={() => setShowCharacterSearch(false)}
+          isLoading={isLoadingCharacters}
+          loadingText="Loading characters..."
         >
-          <div
-            className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
-                Select Character
-              </h2>
-              <button
-                type="button"
-                onClick={() => setShowCharacterSearch(false)}
-                className={styles.closeBtn}
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            {isLoadingCharacters ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                Loading characters...
-              </p>
-            ) : savedCharacters.length === 0 ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                No saved characters found.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
-                {savedCharacters.map((c) => (
-                  <li key={c.id}>
-                    <button
-                      type="button"
-                      onClick={() => handleCharacterSelect(c)}
-                      className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
-                    >
-                      <span className="font-medium">{c.name}</span>
-                      <span className={`text-xs ${styles.label}`}>
-                        HP {c.maxHp ?? ""} - AC {c.ac ?? ""}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
+          {savedCharacters.length === 0 ? (
+            <p className={`text-sm ${styles.loadingText}`}>
+              No saved characters found.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
+              {savedCharacters.map((c) => (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleCharacterSelect(c)}
+                    className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
+                  >
+                    <span className="font-medium">{c.name}</span>
+                    <span className={`text-xs ${styles.label}`}>
+                      {c.notes ? c.notes : ""}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </SearchModal>
       )}
 
       {showPartySearch && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setShowPartySearch(false);
-          }}
+        <SearchModal
+          title="Select Party"
+          onClose={() => setShowPartySearch(false)}
+          isLoading={isLoadingParties}
+          loadingText="Loading parties..."
         >
-          <div
-            className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
-                Select Party
-              </h2>
-              <button
-                type="button"
-                onClick={() => setShowPartySearch(false)}
-                className={styles.closeBtn}
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            {isLoadingParties ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                Loading parties...
-              </p>
-            ) : savedParties.length === 0 ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                No saved parties found.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
-                {savedParties.map((p) => {
-                  const memberNames = savedCharacters
-                    .filter((c) => p.characterIds.includes(c.id))
-                    .map((c) => c.name)
-                    .join(", ");
-                  return (
-                    <li key={p.id}>
-                      <button
-                        type="button"
-                        onClick={() => handlePartySelect(p)}
-                        className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
+          {savedParties.length === 0 ? (
+            <p className={`text-sm ${styles.loadingText}`}>
+              No saved parties found.
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
+              {savedParties.map((p) => {
+                const memberNames = savedCharacters
+                  .filter((c) => p.characterIds.includes(c.id))
+                  .map((c) => c.name)
+                  .join(", ");
+                return (
+                  <li key={p.id}>
+                    <button
+                      type="button"
+                      onClick={() => handlePartySelect(p)}
+                      className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
+                    >
+                      <span className="font-medium">{p.name}</span>
+                      <span
+                        className={`text-xs ${styles.label} ml-4 truncate max-w-[180px]`}
                       >
-                        <span className="font-medium">{p.name}</span>
-                        <span
-                          className={`text-xs ${styles.label} ml-4 truncate max-w-[180px]`}
-                        >
-                          {memberNames || "No members"}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </div>
+                        {memberNames || "No members"}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </SearchModal>
       )}
 
       {showMonsterSearch && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeMonsterSearch();
-          }}
+        <SearchModal
+          title="Select Monster"
+          onClose={closeMonsterSearch}
+          isLoading={isLoadingMonsters || isFetchingDetails}
+          loadingText={
+            isFetchingDetails
+              ? "Loading monster details..."
+              : "Loading monsters..."
+          }
         >
-          <div
-            className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
-                Select Monster
-              </h2>
-              <button
-                type="button"
-                onClick={closeMonsterSearch}
-                className={styles.closeBtn}
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            {isLoadingMonsters ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                Loading monsters...
-              </p>
-            ) : isFetchingDetails ? (
-              <p className={`text-sm ${styles.loadingText}`}>
-                Loading monster details...
-              </p>
-            ) : (
-              <CustomComboBox
-                items={monsters}
-                value={selectedSearchMonster}
-                onChange={(monster) => {
-                  setSelectedSearchMonster(monster);
-                  if (monster) handleMonsterSelect(monster);
-                }}
-                ariaLabel="Monster"
-                placeholder="Search monsters..."
-                displayFunction={(item) => item?.toString() ?? ""}
-              />
-            )}
-          </div>
-        </div>
+          <CustomComboBox
+            items={monsters}
+            value={selectedSearchMonster}
+            onChange={(monster) => {
+              setSelectedSearchMonster(monster);
+              if (monster) handleMonsterSelect(monster);
+            }}
+            ariaLabel="Monster"
+            placeholder="Search monsters..."
+            displayFunction={(item) => item?.toString() ?? ""}
+          />
+        </SearchModal>
       )}
     </>
   );
