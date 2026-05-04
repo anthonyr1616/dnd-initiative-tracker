@@ -210,13 +210,17 @@ export default function CharactersPage() {
   const [isFetching, setIsFetching] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formState, setFormState] = useState(null);
+  const [error, setError] = useState(null);
 
   const loadCharacters = useCallback(async () => {
     if (!user) return;
     setIsFetching(true);
+    setError(null);
     try {
       const data = await getCharacters(user.uid);
       setCharacters(data);
+    } catch {
+      setError("Failed to load characters. Please try again.");
     } finally {
       setIsFetching(false);
     }
@@ -233,14 +237,20 @@ export default function CharactersPage() {
       await saveCharacter(user.uid, { ...data, id: formState?.id });
       setFormState(null);
       loadCharacters();
+    } catch {
+      setError("Failed to save character. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    await deleteCharacter(user.uid, id);
-    setCharacters((prev) => prev.filter((c) => c.id !== id));
+    try {
+      await deleteCharacter(user.uid, id);
+      setCharacters((prev) => prev.filter((c) => c.id !== id));
+    } catch {
+      setError("Failed to delete character. Please try again.");
+    }
   };
 
   if (isLoading) {
@@ -292,6 +302,10 @@ export default function CharactersPage() {
           New Character
         </button>
       </div>
+
+      {error && (
+        <p className="text-sm text-center py-2 text-red-400">{error}</p>
+      )}
 
       {isFetching && (
         <p className={`text-sm text-center py-4 ${styles.muted}`}>

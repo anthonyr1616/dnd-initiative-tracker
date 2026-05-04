@@ -196,10 +196,12 @@ export default function PartiesPage() {
   const [isFetching, setIsFetching] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formState, setFormState] = useState(null);
+  const [error, setError] = useState(null);
 
   const loadData = useCallback(async () => {
     if (!user) return;
     setIsFetching(true);
+    setError(null);
     try {
       const [p, c] = await Promise.all([
         getParties(user.uid),
@@ -207,6 +209,8 @@ export default function PartiesPage() {
       ]);
       setParties(p);
       setCharacters(c);
+    } catch {
+      setError("Failed to load parties. Please try again.");
     } finally {
       setIsFetching(false);
     }
@@ -223,14 +227,20 @@ export default function PartiesPage() {
       await saveParty(user.uid, data);
       setFormState(null);
       loadData();
+    } catch {
+      setError("Failed to save party. Please try again.");
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    await deleteParty(user.uid, id);
-    setParties((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await deleteParty(user.uid, id);
+      setParties((prev) => prev.filter((p) => p.id !== id));
+    } catch {
+      setError("Failed to delete party. Please try again.");
+    }
   };
 
   if (isLoading) {
@@ -279,6 +289,10 @@ export default function PartiesPage() {
           New Party
         </button>
       </div>
+
+      {error && (
+        <p className="text-sm text-center py-2 text-red-400">{error}</p>
+      )}
 
       {isFetching && (
         <p className={`text-sm text-center py-4 ${styles.muted}`}>
