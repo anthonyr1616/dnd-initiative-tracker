@@ -4,7 +4,6 @@ import { subscribeToSession } from "../services/sessionService";
 import HpBar from "../components/HpBar";
 import { getHpStatus } from "../helpers/helperMethods";
 
-
 function ViewerPage() {
   const { id } = useParams();
   const [session, setSession] = useState(undefined);

@@ -8,7 +8,10 @@ import {
   rollHitDice,
   calculateModifier,
 } from "../helpers/helperMethods";
-import { Dices, Plus } from "lucide-react";
+import { Dices, Plus, X } from "lucide-react";
+import { useAuth } from "../helpers/useAuth";
+import { getCharacters } from "../services/characterService";
+import { getParties } from "../services/partyService";
 
 function InitiativeForm({
   onAdd,
@@ -27,6 +30,7 @@ function InitiativeForm({
   const [bonusAc, setBonusAc] = useState("");
   const [initiative, setInitiative] = useState("");
 
+  const { user } = useAuth();
   const { selectedSources } = useSources();
   const [hideDetails, setHideDetails] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -36,6 +40,13 @@ function InitiativeForm({
   const [isLoadingMonsters, setIsLoadingMonsters] = useState(false);
   const [isFetchingDetails, setIsFetchingDetails] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState(null);
+  const [entityType, setEntityType] = useState("custom");
+  const [showCharacterSearch, setShowCharacterSearch] = useState(false);
+  const [showPartySearch, setShowPartySearch] = useState(false);
+  const [savedCharacters, setSavedCharacters] = useState([]);
+  const [savedParties, setSavedParties] = useState([]);
+  const [isLoadingCharacters, setIsLoadingCharacters] = useState(false);
+  const [isLoadingParties, setIsLoadingParties] = useState(false);
   const loadedSourcesKeyRef = useRef(null);
   const menuRef = useRef(null);
 
@@ -48,6 +59,8 @@ function InitiativeForm({
       setAc(editingItem.ac || "");
       setBonusAc(editingItem.bonusAc || "");
       setInitiative(editingItem.initiative || "");
+      setSelectedEntity(editingItem.entity ?? null);
+      setEntityType(editingItem.entityType ?? "custom");
     }
   }, [isEditing, editingItem]);
 
@@ -62,6 +75,27 @@ function InitiativeForm({
       setIsLoadingMonsters(false);
     });
   }, [showMonsterSearch, selectedSources]);
+
+  useEffect(() => {
+    if (!showCharacterSearch || !user) return;
+    setIsLoadingCharacters(true);
+    getCharacters(user.uid).then((data) => {
+      setSavedCharacters(data);
+      setIsLoadingCharacters(false);
+    });
+  }, [showCharacterSearch, user]);
+
+  useEffect(() => {
+    if (!showPartySearch || !user) return;
+    setIsLoadingParties(true);
+    Promise.all([getCharacters(user.uid), getParties(user.uid)]).then(
+      ([chars, parties]) => {
+        setSavedCharacters(chars);
+        setSavedParties(parties);
+        setIsLoadingParties(false);
+      },
+    );
+  }, [showPartySearch, user]);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -87,6 +121,7 @@ function InitiativeForm({
       const acValue = details.armorClass[0]?.value;
       setAc(acValue != null ? String(acValue) : "");
       setSelectedEntity(details);
+      setEntityType("monster");
       const dex = details.stats.dexterity;
       const dexMod = dex != null ? calculateModifier(dex) : 0;
       setInitiative(String(rollDice(20) + dexMod));
@@ -124,6 +159,7 @@ function InitiativeForm({
     setBonusAc("");
     setInitiative("");
     setSelectedEntity(null);
+    setEntityType("custom");
   };
 
   const handleSubmit = (e) => {
@@ -141,6 +177,9 @@ function InitiativeForm({
       privateFields: isEditing
         ? (editingItem.privateFields ?? { name: false, hp: false, ac: false })
         : { name: hideDetails, hp: hideDetails, ac: hideDetails },
+      entity:
+        selectedEntity ?? (isEditing ? (editingItem.entity ?? null) : null),
+      entityType,
     };
 
     if (isEditing) {
@@ -158,6 +197,50 @@ function InitiativeForm({
     resetForm();
     setIsEditing(false);
     setEditingItem(null);
+  };
+
+  const handleCharacterSelect = (character) => {
+    setName(character.name);
+    const hp = character.maxHp != null ? String(character.maxHp) : "";
+    setMaxHp(hp);
+    setCurrentHp(hp);
+    setTemporaryHp("");
+    setAc(character.ac != null ? String(character.ac) : "");
+    setBonusAc("");
+    const entity = { stats: { dexterity: character.dexterity } };
+    const dexMod =
+      character.dexterity != null ? calculateModifier(character.dexterity) : 0;
+    setInitiative(String(rollDice(20) + dexMod));
+    setSelectedEntity(entity);
+    setEntityType("character");
+    setShowCharacterSearch(false);
+  };
+
+  const handlePartySelect = (party) => {
+    const members = savedCharacters.filter((c) =>
+      party.characterIds.includes(c.id),
+    );
+    members.forEach((character) => {
+      const hp = character.maxHp ?? 0;
+      const dexMod =
+        character.dexterity != null
+          ? calculateModifier(character.dexterity)
+          : 0;
+      onAdd({
+        id: crypto.randomUUID(),
+        name: character.name,
+        maxHp: hp,
+        currentHp: hp,
+        temporaryHp: 0,
+        ac: character.ac ?? 0,
+        bonusAc: 0,
+        initiative: rollDice(20) + dexMod,
+        privateFields: { name: false, hp: false, ac: false },
+        entity: { stats: { dexterity: character.dexterity } },
+        entityType: "character",
+      });
+    });
+    setShowPartySearch(false);
   };
 
   return (
@@ -196,13 +279,36 @@ function InitiativeForm({
                     type="button"
                     onClick={() => {
                       setShowMonsterSearch(true);
-
                       setShowMenu(false);
                     }}
                     className={`block w-full text-left px-4 py-2 text-sm ${styles.dropdownItem}`}
                   >
                     Use Monster
                   </button>
+                  {user && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowCharacterSearch(true);
+                          setShowMenu(false);
+                        }}
+                        className={`flex items-center gap-2 w-full text-left px-4 py-2 text-sm ${styles.dropdownItem}`}
+                      >
+                        Add Character
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPartySearch(true);
+                          setShowMenu(false);
+                        }}
+                        className={`flex items-center gap-2 w-full text-left px-4 py-2 text-sm ${styles.dropdownItem}`}
+                      >
+                        Add Party
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -402,6 +508,120 @@ function InitiativeForm({
         </div>
       </form>
 
+      {showCharacterSearch && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowCharacterSearch(false);
+          }}
+        >
+          <div
+            className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
+                Select Character
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowCharacterSearch(false)}
+                className={styles.closeBtn}
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            {isLoadingCharacters ? (
+              <p className={`text-sm ${styles.loadingText}`}>
+                Loading characters...
+              </p>
+            ) : savedCharacters.length === 0 ? (
+              <p className={`text-sm ${styles.loadingText}`}>
+                No saved characters found.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
+                {savedCharacters.map((c) => (
+                  <li key={c.id}>
+                    <button
+                      type="button"
+                      onClick={() => handleCharacterSelect(c)}
+                      className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
+                    >
+                      <span className="font-medium">{c.name}</span>
+                      <span className={`text-xs ${styles.label}`}>
+                        HP {c.maxHp ?? ""} - AC {c.ac ?? ""}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showPartySearch && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowPartySearch(false);
+          }}
+        >
+          <div
+            className={`rounded-xl p-6 w-full max-w-md mx-4 ${styles.modal}`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className={`text-lg font-semibold ${styles.modalTitle}`}>
+                Select Party
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowPartySearch(false)}
+                className={styles.closeBtn}
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            {isLoadingParties ? (
+              <p className={`text-sm ${styles.loadingText}`}>
+                Loading parties...
+              </p>
+            ) : savedParties.length === 0 ? (
+              <p className={`text-sm ${styles.loadingText}`}>
+                No saved parties found.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-1 max-h-80 overflow-y-auto">
+                {savedParties.map((p) => {
+                  const memberNames = savedCharacters
+                    .filter((c) => p.characterIds.includes(c.id))
+                    .map((c) => c.name)
+                    .join(", ");
+                  return (
+                    <li key={p.id}>
+                      <button
+                        type="button"
+                        onClick={() => handlePartySelect(p)}
+                        className={`flex items-center justify-between w-full text-left px-4 py-2 rounded-md text-sm ${styles.dropdownItem}`}
+                      >
+                        <span className="font-medium">{p.name}</span>
+                        <span
+                          className={`text-xs ${styles.label} ml-4 truncate max-w-[180px]`}
+                        >
+                          {memberNames || "No members"}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
+
       {showMonsterSearch && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -422,7 +642,7 @@ function InitiativeForm({
                 className={styles.closeBtn}
                 aria-label="Close"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
             {isLoadingMonsters ? (

@@ -45,7 +45,13 @@ function App() {
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ initiativeItems, currentTurnId, round, combatStarted, sessionId }),
+      JSON.stringify({
+        initiativeItems,
+        currentTurnId,
+        round,
+        combatStarted,
+        sessionId,
+      }),
     );
   }, [initiativeItems, currentTurnId, round, combatStarted, sessionId]);
 
@@ -53,6 +59,10 @@ function App() {
     const id = initialSessionIdRef.current;
     if (!id) return;
     getSession(id).then((data) => {
+      if (data.expiresAt < Date.now()) {
+        setSessionId(null);
+        deleteSession(id);
+      }
       if (data === null) setSessionId(null);
     });
   }, []);
