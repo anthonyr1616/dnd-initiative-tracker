@@ -27,3 +27,31 @@
   opacity: 1;
   background: rgba(255, 255, 255, 0.15);
 }
+
+.authArea {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.userName {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.signInBtn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+}
+.signInBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

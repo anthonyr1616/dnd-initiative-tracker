@@ -2,6 +2,7 @@ import Layout from "./pages/Layout";
 import App from "./App";
 import MonsterInfoPage from "./pages/MonsterInfoPage";
 import SpellInfoPage from "./pages/SpellInfoPage";
+import CharactersPage from "./pages/CharactersPage";
 import ErrorPage from "./pages/ErrorPage";
 import ViewerPage from "./pages/ViewerPage";
 
@@ -22,6 +23,10 @@ const routes = [
       {
         path: "spells",
         element: <SpellInfoPage />,
+      },
+      {
+        path: "characters",
+        element: <CharactersPage />,
       },
     ],
   },
