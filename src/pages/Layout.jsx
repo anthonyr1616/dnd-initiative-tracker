@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { useState } from "react";
-import { Settings } from "lucide-react";
+import { Settings, LogIn, LogOut } from "lucide-react";
 import { SourcesProvider } from "../context/SourcesContext";
 import { useSources } from "../helpers/useSources";
 import SourcesModal from "../components/SourcesModal";
