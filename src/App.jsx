@@ -59,11 +59,12 @@ function App() {
     const id = initialSessionIdRef.current;
     if (!id) return;
     getSession(id).then((data) => {
-      if (data.expiresAt < Date.now()) {
+      if (data === null) 
+        setSessionId(null);
+      else if (data.expiresAt < Date.now()) {
         setSessionId(null);
         deleteSession(id);
       }
-      if (data === null) setSessionId(null);
     });
   }, []);
 
