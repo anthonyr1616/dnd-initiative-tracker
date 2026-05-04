@@ -248,9 +248,6 @@ export default function PartiesPage() {
         <p className={`text-lg font-semibold ${styles.emptyTitle}`}>
           Sign in to manage parties
         </p>
-        <p className={`text-sm ${styles.muted}`}>
-          Your parties are saved to your account and available on any device.
-        </p>
         <button
           onClick={signInWithGoogle}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium ${styles.signInBtn}`}
