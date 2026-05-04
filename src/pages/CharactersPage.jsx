@@ -17,7 +17,7 @@ const EMPTY_FORM = {
   notes: "",
 };
 
-function CharacterForm({ initial, onSave, onCancel }) {
+function CharacterForm({ initial, isSaving, onSave, onCancel }) {
   const [form, setForm] = useState(initial ?? EMPTY_FORM);
 
   const set = (field) => (e) =>
@@ -133,9 +133,10 @@ function CharacterForm({ initial, onSave, onCancel }) {
             </button>
             <button
               type="submit"
+              disabled={isSaving}
               className={`rounded-md px-5 py-2 text-sm font-medium ${styles.saveBtn}`}
             >
-              {initial ? "Save" : "Create"}
+              {isSaving ? "Saving…" : (initial ? "Save" : "Create")}
             </button>
           </div>
         </form>
@@ -206,7 +207,8 @@ export default function CharactersPage() {
   const { user, isLoading } = useAuth();
   const [characters, setCharacters] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [formState, setFormState] = useState(null); // null = closed, {} = new, {id,...} = editing
+  const [isSaving, setIsSaving] = useState(false);
+  const [formState, setFormState] = useState(null);
 
   const loadCharacters = useCallback(async () => {
     if (!user) return;
@@ -224,9 +226,15 @@ export default function CharactersPage() {
   }, [loadCharacters]);
 
   const handleSave = async (data) => {
-    await saveCharacter(user.uid, { ...data, id: formState?.id });
-    setFormState(null);
-    loadCharacters();
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      await saveCharacter(user.uid, { ...data, id: formState?.id });
+      setFormState(null);
+      loadCharacters();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -297,7 +305,7 @@ export default function CharactersPage() {
             strokeWidth={1}
           />
           <p className={`text-sm ${styles.muted}`}>
-            No characters yet. Create one to get started.
+            No characters yet
           </p>
         </div>
       )}
@@ -316,6 +324,7 @@ export default function CharactersPage() {
       {formState !== null && (
         <CharacterForm
           initial={formState.id ? formState : null}
+          isSaving={isSaving}
           onSave={handleSave}
           onCancel={() => setFormState(null)}
         />
