@@ -530,13 +530,13 @@ function InitiativeForm({
                 <button
                   type="button"
                   onClick={resetForm}
-                  className={`rounded-md border px-4 py-2 text-sm font-medium ${styles.cancelBtn}`}
+                  className={`rounded-md border px-4 py-2 text-sm font-medium cursor-pointer ${styles.cancelBtn}`}
                 >
                   Clear
                 </button>
                 <button
                   type="submit"
-                  className={`rounded-md px-5 py-2 text-sm font-medium ${styles.addBtn}`}
+                  className={`rounded-md px-5 py-2 text-sm font-medium cursor-pointer ${styles.addBtn}`}
                 >
                   Add to Initiative
                 </button>

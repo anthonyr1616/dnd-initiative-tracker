@@ -74,9 +74,9 @@ function Layout() {
                 Home
               </Link>
               <div className="flex items-center gap-4 border-l-1 pl-4">
-              <Link to="/monsters" className={styles.navLink}>
-                Monsters
-              </Link>
+                <Link to="/monsters" className={styles.navLink}>
+                  Monsters
+                </Link>
                 <Link to="/spells" className={styles.navLink}>
                   Spells
                 </Link>

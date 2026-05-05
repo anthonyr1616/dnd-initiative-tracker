@@ -5,6 +5,7 @@ import { signInWithGoogle } from "../services/authService";
 import { getCharacters } from "../services/characterService";
 import { getParties, saveParty, deleteParty } from "../services/partyService";
 import styles from "./PartiesPage.module.css";
+import ConfirmModal from "../components/ConfirmModal";
 
 const EMPTY_FORM = { name: "", characterIds: [] };
 
@@ -156,14 +157,14 @@ function PartyCard({ party, characters, onEdit, onDelete }) {
         <div className="flex gap-1 shrink-0">
           <button
             onClick={() => onEdit(party)}
-            className={`w-8 h-8 flex items-center justify-center rounded-full ${styles.editBtn}`}
+            className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${styles.editBtn}`}
             title="Edit"
           >
             <Edit className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => onDelete(party.id)}
-            className={`w-8 h-8 flex items-center justify-center rounded-full ${styles.deleteBtn}`}
+            className={`w-8 h-8 flex items-center justify-center rounded-full cursor-pointer ${styles.deleteBtn}`}
             title="Delete"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -197,6 +198,7 @@ export default function PartiesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [formState, setFormState] = useState(null);
   const [error, setError] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const loadData = useCallback(async () => {
     if (!user) return;
@@ -283,7 +285,7 @@ export default function PartiesPage() {
         </h1>
         <button
           onClick={() => setFormState(EMPTY_FORM)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${styles.newBtn}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer ${styles.newBtn}`}
         >
           <Plus className="w-4 h-4" />
           New Party
@@ -317,7 +319,7 @@ export default function PartiesPage() {
             party={p}
             characters={characters}
             onEdit={(party) => setFormState(party)}
-            onDelete={handleDelete}
+            onDelete={setConfirmDeleteId}
           />
         ))}
       </div>
@@ -330,6 +332,17 @@ export default function PartiesPage() {
           isSaving={isSaving}
           onSave={handleSave}
           onCancel={() => setFormState(null)}
+        />
+      )}
+
+      {confirmDeleteId !== null && (
+        <ConfirmModal
+          title="Delete Party?"
+          onConfirm={() => {
+            handleDelete(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+          onCancel={() => setConfirmDeleteId(null)}
         />
       )}
     </div>

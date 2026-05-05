@@ -10,6 +10,7 @@ import {
   getSession,
 } from "./services/sessionService";
 import { useCombat } from "./helpers/useCombat";
+import ConfirmModal from "./components/ConfirmModal";
 
 const STORAGE_KEY = "dnd-initiative-tracker";
 
@@ -34,6 +35,7 @@ function App() {
   );
   const [copied, setCopied] = useState(false);
   const [isCreatingSession, setIsCreatingSession] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState(null);
   const syncTimeoutRef = useRef(null);
 
   const combat = useCombat(initiativeItems, {
@@ -125,14 +127,21 @@ function App() {
     );
   };
 
-  const handleDelete = (id) => {
-    if (isEditing && editingItem?.id === id) {
-      setIsEditing(false);
-      setEditingItem(null);
-    }
-    const next = initiativeItems.filter((item) => item.id !== id);
-    setInitiativeItems(next);
-    combat.onItemDeleted(id, next);
+  const confirmDelete = (id) => {
+    const item = initiativeItems.find((i) => i.id === id);
+    setConfirmDialog({
+      message: `Remove ${item?.name ?? "this combatant"} from initiative?`,
+      onConfirm: () => {
+        if (isEditing && editingItem?.id === id) {
+          setIsEditing(false);
+          setEditingItem(null);
+        }
+        const next = initiativeItems.filter((i) => i.id !== id);
+        setInitiativeItems(next);
+        combat.onItemDeleted(id, next);
+        setConfirmDialog(null);
+      },
+    });
   };
 
   const handleEdit = (id) => {
@@ -167,11 +176,17 @@ function App() {
     });
   };
 
-  const handleClearAll = () => {
-    setInitiativeItems([]);
-    setIsEditing(false);
-    setEditingItem(null);
-    combat.reset();
+  const confirmClearAll = () => {
+    setConfirmDialog({
+      message: "Remove all combatants and reset combat?",
+      onConfirm: () => {
+        setInitiativeItems([]);
+        setIsEditing(false);
+        setEditingItem(null);
+        combat.reset();
+        setConfirmDialog(null);
+      },
+    });
   };
 
   return (
@@ -247,7 +262,7 @@ function App() {
                   Reset
                 </button>
                 <button
-                  onClick={handleClearAll}
+                  onClick={confirmClearAll}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
                 >
                   Clear All
@@ -267,7 +282,7 @@ function App() {
                   Start Combat
                 </button>
                 <button
-                  onClick={handleClearAll}
+                  onClick={confirmClearAll}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer ${styles.clearBtn}`}
                 >
                   Clear All
@@ -282,7 +297,7 @@ function App() {
         initiativeItems={initiativeItems}
         currentTurnId={combatStarted ? currentTurnId : null}
         sessionActive={!!sessionId}
-        onDelete={handleDelete}
+        onDelete={confirmDelete}
         onEdit={handleEdit}
         onUpdate={handleUpdate}
         onMoveUp={handleMoveUp}
@@ -298,6 +313,15 @@ function App() {
         setEditingItem={setEditingItem}
         sessionActive={!!sessionId}
       />
+
+      {confirmDialog && (
+        <ConfirmModal
+          title="Remove from Initiative?"
+          message={confirmDialog.message}
+          onConfirm={confirmDialog.onConfirm}
+          onCancel={() => setConfirmDialog(null)}
+        />
+      )}
     </div>
   );
 }

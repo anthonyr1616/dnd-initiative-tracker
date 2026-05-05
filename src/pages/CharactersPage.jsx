@@ -9,6 +9,7 @@ import {
 } from "../services/characterService";
 import styles from "./CharactersPage.module.css";
 import { calculateModifier } from "../helpers/helperMethods";
+import ConfirmModal from "../components/ConfirmModal";
 
 const EMPTY_FORM = {
   name: "",
@@ -137,7 +138,7 @@ function CharacterForm({ initial, isSaving, onSave, onCancel }) {
               disabled={isSaving}
               className={`rounded-md px-5 py-2 text-sm font-medium ${styles.saveBtn}`}
             >
-              {isSaving ? "Saving…" : (initial ? "Save" : "Create")}
+              {isSaving ? "Saving…" : initial ? "Save" : "Create"}
             </button>
           </div>
         </form>
@@ -211,6 +212,7 @@ export default function CharactersPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [formState, setFormState] = useState(null);
   const [error, setError] = useState(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   const loadCharacters = useCallback(async () => {
     if (!user) return;
@@ -319,9 +321,7 @@ export default function CharactersPage() {
             className={`w-10 h-10 mx-auto mb-2 ${styles.emptyIcon}`}
             strokeWidth={1}
           />
-          <p className={`text-sm ${styles.muted}`}>
-            No characters yet
-          </p>
+          <p className={`text-sm ${styles.muted}`}>No characters yet</p>
         </div>
       )}
 
@@ -331,7 +331,7 @@ export default function CharactersPage() {
             key={c.id}
             character={c}
             onEdit={(char) => setFormState(char)}
-            onDelete={handleDelete}
+            onDelete={setConfirmDeleteId}
           />
         ))}
       </div>
@@ -342,6 +342,17 @@ export default function CharactersPage() {
           isSaving={isSaving}
           onSave={handleSave}
           onCancel={() => setFormState(null)}
+        />
+      )}
+
+      {confirmDeleteId !== null && (
+        <ConfirmModal
+          title="Delete Character?"
+          onConfirm={() => {
+            handleDelete(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+          onCancel={() => setConfirmDeleteId(null)}
         />
       )}
     </div>
