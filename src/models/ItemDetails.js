@@ -1,1 +1,0 @@
-// TODO: General Equipment, weapons, and armor all fall under same endpoint but give different result structures

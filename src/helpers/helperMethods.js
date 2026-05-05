@@ -20,11 +20,6 @@ function decimalToFraction(decimal) {
   return `${numerator / commonDivisor}/${denominator / commonDivisor}`;
 }
 
-function makeUrl(url) {
-  const BASE_URL = "https://www.dnd5eapi.co/";
-  return new URL(url, BASE_URL).toString();
-}
-
 const formatKeyValueArray = (obj, capitalize = true) =>
   Object.entries(obj).map(([key, value]) => {
     const formattedKey = capitalize
@@ -65,7 +60,6 @@ function getHpStatus(current, max) {
 
 export {
   decimalToFraction,
-  makeUrl,
   formatKeyValueArray,
   calculateModifier,
   rollDice,
